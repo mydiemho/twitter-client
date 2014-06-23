@@ -16,7 +16,7 @@ public class User {
         try {
             user.userId = jsonObject.getLong("id");
             user.name = jsonObject.getString("name");
-            user.screenName = jsonObject.getString("screen_name");
+            user.screenName = "@" + jsonObject.getString("screen_name");
             user.profileImageUrl = jsonObject.getString("profile_image_url");
         } catch (JSONException e) {
             e.printStackTrace();

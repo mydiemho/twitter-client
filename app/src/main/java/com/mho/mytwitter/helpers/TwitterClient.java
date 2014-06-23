@@ -1,7 +1,7 @@
 package com.mho.mytwitter.helpers;
 
 import com.codepath.oauth.OAuthBaseClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.scribe.builder.api.Api;
@@ -23,34 +23,51 @@ import android.content.Context;
  */
 public class TwitterClient extends OAuthBaseClient {
 
-    public static final Class<? extends Api> REST_API_CLASS = TwitterApi.class; // Change this
+    public static final Class<? extends Api> REST_API_CLASS = TwitterApi.class;
 
     public static final String REST_URL = "https://api.twitter.com/1.1";
-            // Change this, base API URL
+    public static final String HOME_TIMELINE_PATH = "/statuses/home_timeline.json";
 
-    public static final String REST_CONSUMER_KEY = "y24E6IvyVbu068VEkFq1j17lG";       // Change this
-
+    // oauth required settings
+    public static final String REST_CONSUMER_KEY = "y24E6IvyVbu068VEkFq1j17lG";
     public static final String REST_CONSUMER_SECRET
-            = "me7Wkq3BxsNw2KllNX7xRXxjhRqZCmVODLxXmyyCyGzSMYzVM8"; // Change this
-
+            = "me7Wkq3BxsNw2KllNX7xRXxjhRqZCmVODLxXmyyCyGzSMYzVM8";
     public static final String REST_CALLBACK_URL = "oauth://mydiemho-twitter-client";
-            // Change this (here and in manifest)
 
     public TwitterClient(Context context) {
         super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET,
                 REST_CALLBACK_URL);
     }
 
-    public void getHomeTimeline(AsyncHttpResponseHandler handler) {
-        String apiUrl = getApiUrl("/statuses/home_timeline.json");
+    public void getHomeTimeline(
+            int count,
+            long sinceId,
+            long maxId,
+            JsonHttpResponseHandler handler) {
+        String apiUrl = getApiUrl(HOME_TIMELINE_PATH);
 
         // NOTE: if there are no parameters, pass null instead
-        RequestParams params = new RequestParams();
-        params.put("since_id", "1");
+        RequestParams params = getRequestParams(count, sinceId, maxId);
 
         client.get(apiUrl, params, handler);
-
     }
+
+    private RequestParams getRequestParams(int count, long sinceId, long maxId) {
+        RequestParams params = new RequestParams();
+
+        //first request to a timeline endpoint should only specify a count
+        if (sinceId > 0) {
+            params.put("since_id", String.valueOf(sinceId));
+        }
+
+        if (maxId > 0) {
+            params.put("max_id", String.valueOf(maxId));
+        }
+        params.put("count", String.valueOf(count));
+
+        return params;
+    }
+
     // CHANGE THIS
     // DEFINE METHODS for different API endpoints here
 //	public void getInterestingnessList(AsyncHttpResponseHandler handler) {

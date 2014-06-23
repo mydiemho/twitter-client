@@ -1,8 +1,12 @@
 package com.mho.mytwitter.models;
 
+import com.google.common.base.Objects;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +45,10 @@ public class Tweet {
         // populate object with extracted values;
         try {
             tweet.body = jsonObject.getString("text");
-            tweet.tweetId = jsonObject.getLong("id");
+            tweet.tweetId = jsonObject.getLong("id_str");
             tweet.createdAt = jsonObject.getString("created_at");
             tweet.user = User.fromJsonObject(jsonObject.getJSONObject("user"));
+            Log.d("DEBUG", tweet.toString());
         } catch (JSONException e) {
             e.printStackTrace();
             return  null;
@@ -70,6 +75,10 @@ public class Tweet {
 
     @Override
     public String toString() {
-        return getBody() + " - " + getUser().getScreenName();
+        return Objects.toStringHelper(this)
+                .add("user", user.getName())
+                .add("tweetId", tweetId)
+                .add("body", body)
+                .toString();
     }
 }

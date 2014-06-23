@@ -1,5 +1,7 @@
 package com.mho.mytwitter.activities;
 
+import com.google.common.base.Splitter;
+
 import com.mho.mytwitter.R;
 import com.mho.mytwitter.models.Tweet;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,7 +44,7 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
             // find the views within tweet_item template
             viewHolder.ivProfileImage = (ImageView) convertView.findViewById(R.id.ivProfileImage);
             viewHolder.tvName = (TextView) convertView.findViewById(R.id.tvName);
-            viewHolder.tvScreenName = (TextView) convertView.findViewById(R.id.tvName);
+            viewHolder.tvScreenName = (TextView) convertView.findViewById(R.id.tvScreenName);
             viewHolder.tvTimestamp = (TextView) convertView.findViewById(R.id.tvTimestamp);
             viewHolder.tvBody = (TextView) convertView.findViewById(R.id.tvBody);
 
@@ -67,10 +70,15 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
 
     // View lookup cache
     private static class ViewHolder {
+
         ImageView ivProfileImage;
+
         TextView tvName;
+
         TextView tvScreenName;
+
         TextView tvTimestamp;
+
         TextView tvBody;
     }
 
@@ -82,12 +90,24 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
         String relativeDate = "";
         try {
             long dateMillis = sf.parse(rawJsonDate).getTime();
-            relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
-                    System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
+
+            relativeDate = DateUtils.getRelativeTimeSpanString(
+                    dateMillis,
+                    System.currentTimeMillis(),
+                    DateUtils.SECOND_IN_MILLIS,
+                    DateUtils.FORMAT_ABBREV_ALL).toString();
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        return relativeDate;
+        // hack to get twitter-like relative time format
+        Iterable<String> tokens = Splitter.on(' ').split(relativeDate);
+//        Log.d("DEBUG", tokens.toString());
+        Iterator<String> iterator = tokens.iterator();
+        String value = iterator.next();
+        char unit = iterator.next().charAt(0);
+
+        return value + unit;
     }
 }
