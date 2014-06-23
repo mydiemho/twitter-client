@@ -5,6 +5,7 @@ import com.mho.mytwitter.R;
 import com.mho.mytwitter.helpers.EndlessScrollListener;
 import com.mho.mytwitter.helpers.TwitterApplication;
 import com.mho.mytwitter.helpers.TwitterClient;
+import com.mho.mytwitter.helpers.Utils;
 import com.mho.mytwitter.models.Tweet;
 
 import org.json.JSONArray;
@@ -21,12 +22,12 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+
 
 public class TimelineActivity extends Activity {
 
     private static final int MAX_RESULT_COUNT = 25;
-    private long maxId = 1;
-    private long sinceId = 1;
 
     private TwitterClient twitterClient;
     private List<Tweet> tweets;
@@ -60,7 +61,6 @@ public class TimelineActivity extends Activity {
             }
         });
 
-
         tweets = new ArrayList<Tweet>();
         tweetsAdapter = new TweetArrayAdapter(this, tweets);
         lvTweets.setAdapter(tweetsAdapter);
@@ -68,6 +68,7 @@ public class TimelineActivity extends Activity {
         // first request to a timeline endpoint should only specify a count
         populateTimeline(MAX_RESULT_COUNT, 0, 0);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -88,9 +89,16 @@ public class TimelineActivity extends Activity {
     }
 
     private void populateTimeline(int count, long sinceId, long maxId) {
-
         setProgressBarIndeterminateVisibility(true);
 
+        if (!Utils.isNetworkAvailable(this)) {
+            Crouton.makeText(this, getString(R.string.msg_network_unavailble), Utils.STYLE).show();
+            return;
+        }
+        fetchTweets(count, sinceId, maxId);
+    }
+
+    private void fetchTweets(int count, long sinceId, long maxId) {
         twitterClient.getHomeTimeline(
                 MAX_RESULT_COUNT,
                 sinceId,
@@ -103,7 +111,6 @@ public class TimelineActivity extends Activity {
 
                         List<Tweet> newTweets = Tweet.fromJsonArray(jsonArray);
                         tweetsAdapter.addAll(newTweets);
-
                     }
 
                     @Override
