@@ -1,4 +1,4 @@
-package com.mho.mytwitter.activities;
+package com.mho.mytwitter.adapters;
 
 import com.google.common.base.Splitter;
 
@@ -70,15 +70,10 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
 
     // View lookup cache
     private static class ViewHolder {
-
         ImageView ivProfileImage;
-
         TextView tvName;
-
         TextView tvScreenName;
-
         TextView tvTimestamp;
-
         TextView tvBody;
     }
 
@@ -94,16 +89,19 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
             relativeDate = DateUtils.getRelativeTimeSpanString(
                     dateMillis,
                     System.currentTimeMillis(),
-                    DateUtils.SECOND_IN_MILLIS,
-                    DateUtils.FORMAT_ABBREV_ALL).toString();
+                    DateUtils.SECOND_IN_MILLIS).toString();
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
+        if(relativeDate.equals("yesterday")) {
+            return "1d";
+        }
         // hack to get twitter-like relative time format
         Iterable<String> tokens = Splitter.on(' ').split(relativeDate);
 //        Log.d("DEBUG", tokens.toString());
+
         Iterator<String> iterator = tokens.iterator();
         String value = iterator.next();
         char unit = iterator.next().charAt(0);

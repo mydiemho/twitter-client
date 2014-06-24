@@ -6,12 +6,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tweet {
+public class Tweet implements Parcelable {
     private long tweetId;
     private String body;
     private String createdAt;
@@ -38,7 +39,7 @@ public class Tweet {
         return tweets;
     }
 
-    private static Tweet fromJsonObject(JSONObject jsonObject)
+    public static Tweet fromJsonObject(JSONObject jsonObject)
     {
         Tweet tweet = new Tweet();
 
@@ -48,7 +49,7 @@ public class Tweet {
             tweet.tweetId = jsonObject.getLong("id_str");
             tweet.createdAt = jsonObject.getString("created_at");
             tweet.user = User.fromJsonObject(jsonObject.getJSONObject("user"));
-            Log.d("DEBUG", tweet.toString());
+//            Log.d("DEBUG", tweet.toString());
         } catch (JSONException e) {
             e.printStackTrace();
             return  null;
@@ -81,4 +82,37 @@ public class Tweet {
                 .add("body", body)
                 .toString();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.tweetId);
+        dest.writeString(this.body);
+        dest.writeString(this.createdAt);
+        dest.writeParcelable(this.user, 0);
+    }
+
+    public Tweet() {
+    }
+
+    private Tweet(Parcel in) {
+        this.tweetId = in.readLong();
+        this.body = in.readString();
+        this.createdAt = in.readString();
+        this.user = in.readParcelable(((Object) user).getClass().getClassLoader());
+    }
+
+    public static Parcelable.Creator<Tweet> CREATOR = new Parcelable.Creator<Tweet>() {
+        public Tweet createFromParcel(Parcel source) {
+            return new Tweet(source);
+        }
+
+        public Tweet[] newArray(int size) {
+            return new Tweet[size];
+        }
+    };
 }

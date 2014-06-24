@@ -1,7 +1,12 @@
 package com.mho.mytwitter.activities;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mho.mytwitter.R;
+import com.mho.mytwitter.adapters.TweetArrayAdapter;
 import com.mho.mytwitter.helpers.EndlessScrollListener;
 import com.mho.mytwitter.helpers.TwitterApplication;
 import com.mho.mytwitter.helpers.TwitterClient;
@@ -10,11 +15,9 @@ import com.mho.mytwitter.models.Tweet;
 
 import org.json.JSONArray;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -25,7 +28,7 @@ import java.util.List;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
 
-public class TimelineActivity extends Activity {
+public class TimelineActivity extends SherlockFragmentActivity {
 
     private static final int MAX_RESULT_COUNT = 25;
 
@@ -71,9 +74,11 @@ public class TimelineActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.timeline, menu);
-        return true;
+        // Inflate the options menu from XML; this adds items to the action bar if it is present.
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.timeline, menu);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -82,25 +87,24 @@ public class TimelineActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
     private void populateTimeline(int count, long sinceId, long maxId) {
-        setProgressBarIndeterminateVisibility(true);
 
         if (!Utils.isNetworkAvailable(this)) {
             Crouton.makeText(this, getString(R.string.msg_network_unavailble), Utils.STYLE).show();
             return;
         }
+
         fetchTweets(count, sinceId, maxId);
     }
 
     private void fetchTweets(int count, long sinceId, long maxId) {
+        setProgressBarIndeterminateVisibility(true);
+
         twitterClient.getHomeTimeline(
-                MAX_RESULT_COUNT,
+                count,
                 sinceId,
                 maxId,
                 new JsonHttpResponseHandler() {
@@ -122,4 +126,24 @@ public class TimelineActivity extends Activity {
         );
     }
 
+    public void displayComposePanel(MenuItem item) {
+        Intent i = new Intent(this, ComposeActivity.class);
+        startActivityForResult(i, Utils.COMPOSE_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("DEBUG", String.valueOf(requestCode));
+//        if((requestCode == Utils.COMPOSE_REQUEST_CODE)) {
+//            Tweet latestTweet = data.getParcelableExtra("tweet");
+//            Log.d("DEBUG", latestTweet.toString());
+//
+//            // add tweet to top of container
+//            tweets.add(0, latestTweet);
+//            // show list at beginning
+//            lvTweets.setSelection(0);
+//
+//            tweetsAdapter.notifyDataSetChanged();
+//        }
+    }
 }

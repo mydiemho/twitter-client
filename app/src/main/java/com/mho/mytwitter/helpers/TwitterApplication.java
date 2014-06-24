@@ -1,10 +1,20 @@
 package com.mho.mytwitter.helpers;
 
+import com.mho.mytwitter.models.User;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /*
  * This is the Android application itself and is used to configure various settings
@@ -18,6 +28,7 @@ import android.content.Context;
 public class TwitterApplication extends com.activeandroid.app.Application {
 
     private static Context context;
+    private static User user;
 
     @Override
     public void onCreate() {
@@ -37,5 +48,26 @@ public class TwitterApplication extends com.activeandroid.app.Application {
     public static TwitterClient getTwitterClient() {
         return (TwitterClient) TwitterClient
                 .getInstance(TwitterClient.class, TwitterApplication.context);
+    }
+
+    public static void setUser(User user)
+    {
+        TwitterApplication.user = user;
+    }
+
+    public static User getUser() {
+        return TwitterApplication.user;
+    }
+
+    /* http://stackoverflow.com/a/9490060 */
+    public static Drawable drawableFromUrl(String url) throws IOException {
+        Bitmap bitmap;
+
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.connect();
+        InputStream input = connection.getInputStream();
+
+        bitmap = BitmapFactory.decodeStream(input);
+        return new BitmapDrawable(bitmap);
     }
 }

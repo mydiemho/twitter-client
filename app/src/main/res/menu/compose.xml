@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.mho.mytwitter.activities.ComposeActivity">
+
+    <!--custom view items-->
+    <item
+            android:id="@+id/action_chars_label"
+            android:title="@string/label_max_chars"
+            android:orderInCategory="40"
+            android:showAsAction="always"
+            android:actionLayout="@layout/action_view_chars" />
+
+    <!--custom view items-->
+    <item
+            android:id="@+id/action_tweet"
+            android:title="@string/action_tweet"
+            android:orderInCategory="100"
+            android:showAsAction="always"
+            android:actionLayout="@layout/action_view_tweet"/>
+
+</menu>

@@ -14,7 +14,10 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class Utils {
 
+    public static final int COMPOSE_REQUEST_CODE = 1;
+
     private static final Configuration CROUTON_CONFIGURATION = new Configuration.Builder().setDuration(4000).build();
+
     public static final Style STYLE = new Style.Builder()
             .setBackgroundColorValue(Color.parseColor("#daffc0"))
             .setGravity(Gravity.CENTER_HORIZONTAL)

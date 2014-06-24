@@ -1,6 +1,7 @@
 package com.mho.mytwitter.helpers;
 
 import com.codepath.oauth.OAuthBaseClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -8,6 +9,7 @@ import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
+import android.util.Log;
 
 /*
  * 
@@ -23,10 +25,12 @@ import android.content.Context;
  */
 public class TwitterClient extends OAuthBaseClient {
 
-    public static final Class<? extends Api> REST_API_CLASS = TwitterApi.class;
+    private static final Class<? extends Api> REST_API_CLASS = TwitterApi.class;
 
-    public static final String REST_URL = "https://api.twitter.com/1.1";
-    public static final String HOME_TIMELINE_PATH = "/statuses/home_timeline.json";
+    private static final String REST_URL = "https://api.twitter.com/1.1";
+    private static final String HOME_TIMELINE_PATH = "/statuses/home_timeline.json";
+    private static final String VERIFY_CREDENTIALS_PATH = "/account/verify_credentials.json";
+    private static final String UPDATE_PATH = "/statuses/update.json";
 
     // oauth required settings
     public static final String REST_CONSUMER_KEY = "y24E6IvyVbu068VEkFq1j17lG";
@@ -66,6 +70,34 @@ public class TwitterClient extends OAuthBaseClient {
         params.put("count", String.valueOf(count));
 
         return params;
+    }
+
+    public void verifyCredentials(JsonHttpResponseHandler handler)
+    {
+        String apiUrl = getApiUrl(VERIFY_CREDENTIALS_PATH);
+        client.get(apiUrl, null, handler);
+    }
+
+    public void sendTweet(String tweet, JsonHttpResponseHandler handler)
+    {
+        String apiUrl = getApiUrl(UPDATE_PATH);
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("status", tweet);
+
+        Log.d("DEBUG", requestParams.toString());
+
+        client.post(apiUrl, requestParams, handler);
+    }
+
+    public void sendTweet(String tweet, AsyncHttpResponseHandler handler)
+    {
+        String apiUrl = getApiUrl(UPDATE_PATH);
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("status", tweet);
+
+        Log.d("DEBUG", requestParams.toString());
+
+        client.post(apiUrl, requestParams, handler);
     }
 
     // CHANGE THIS
