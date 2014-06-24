@@ -1,5 +1,6 @@
 package com.mho.mytwitter.helpers;
 
+import com.activeandroid.ActiveAndroid;
 import com.mho.mytwitter.models.User;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -43,6 +44,15 @@ public class TwitterApplication extends com.activeandroid.app.Application {
                 .defaultDisplayImageOptions(defaultOptions)
                 .build();
         ImageLoader.getInstance().init(config);
+
+        ActiveAndroid.initialize(this);
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+
+        ActiveAndroid.dispose();
     }
 
     public static TwitterClient getTwitterClient() {

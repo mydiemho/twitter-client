@@ -14,7 +14,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 
 public class Utils {
 
-    public static final int COMPOSE_REQUEST_CODE = 1;
+    public static final int COMPOSE_REQUEST_CODE = 20;
 
     private static final Configuration CROUTON_CONFIGURATION = new Configuration.Builder().setDuration(4000).build();
 

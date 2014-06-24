@@ -1,18 +1,21 @@
 package com.mho.mytwitter.activities;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mho.mytwitter.R;
 import com.mho.mytwitter.helpers.TwitterApplication;
 import com.mho.mytwitter.helpers.TwitterClient;
 import com.mho.mytwitter.helpers.Utils;
+import com.mho.mytwitter.models.Tweet;
 import com.mho.mytwitter.models.User;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import android.content.Context;
+import org.json.JSONObject;
+
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -25,7 +28,7 @@ import android.widget.TextView;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
-public class ComposeActivity extends SherlockActivity {
+public class ComposeActivity extends SherlockFragmentActivity {
 
     private static final int MAX_CHAR_COUNT = 140;
     private TwitterClient twitterClient;
@@ -120,7 +123,9 @@ public class ComposeActivity extends SherlockActivity {
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                composeTweet();
+                // disable button
+                btnTweet.setEnabled(false);
+                postTweet();
             }
         });
 
@@ -131,31 +136,40 @@ public class ComposeActivity extends SherlockActivity {
         return super.onPrepareOptionsMenu(menu);
     }
 
-    public void composeTweet() {
+    public void postTweet() {
         Log.d("DEBUG", "calling send tweet");
-        // jump back to TimelineActivity when done
 
-        twitterClient.sendTweet(etTweet.getText().toString(), new AsyncHttpResponseHandler() {
+        twitterClient.postTweet(etTweet.getText().toString(), new JsonHttpResponseHandler() {
 
             @Override
-            public void onSuccess(String content) {
-                Log.d("DEBUG", "successfully send tweet");
-                Log.d("DEBUG", "Content: " + content);
+            public void onSuccess(JSONObject response) {
+                notifyUser(getString(R.string.msg_send_success));
 
-//                Tweet tweet = Tweet.fromJsonObject(response);
-                notifyUser(getBaseContext(), getString(R.string.msg_send_success));
-//                Intent intent = new Intent(getBaseContext(), TimelineActivity.class);
-//                intent.putExtra("tweet", tweet);
-//                setResult(RESULT_OK, intent);
+                Log.d("DEBUG", "successfully send tweet");
+                Log.d("DEBUG", "response: " + response);
+
+                Tweet tweet = Tweet.fromJsonObject(response);
+                Log.d("DEBUG", "tweet: " + tweet);
+
+                // parent intent
+                Intent data = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("tweet", tweet);
+                // Pass relevant data back as a result
+                data.putExtras(bundle);
+                // Activity finished ok, return the data
+                setResult(RESULT_OK, data);
+
+                // closes the activity, go back and pass data to Timeline activity
                 finish();
             }
 
             @Override
             public void onFailure(Throwable error, String content) {
                 if (Utils.isNetworkAvailable(getApplicationContext())) {
-                    notifyUser(getBaseContext(), getString(R.string.msg_send_fail));
+                    notifyUser(getString(R.string.msg_send_fail));
                 } else {
-                    notifyUser(getBaseContext(), getString(R.string.msg_network_unavailble));
+                    notifyUser(getString(R.string.msg_network_unavailble));
                 }
                 Log.d("DEBUG", "error: " + error.toString());
                 Log.d("DEBUG", "content: " + content);
@@ -163,39 +177,7 @@ public class ComposeActivity extends SherlockActivity {
         });
     }
 
-//    public void composeTweet() {
-//        Log.d("DEBUG", "calling send tweet");
-//        // jump back to TimelineActivity when done
-//
-//        twitterClient.sendTweet(etTweet.getText().toString(), new JsonHttpResponseHandler() {
-//
-//            @Override
-//            public void onSuccess(JSONObject response) {
-//                Log.d("DEBUG", "successfully send tweet");
-//                Log.d("DEBUG", response.toString());
-//
-//                Tweet tweet = Tweet.fromJsonObject(response);
-//                notifyUser(getBaseContext(), getString(R.string.msg_send_success));
-//                Intent intent = new Intent(getBaseContext(), TimelineActivity.class);
-//                intent.putExtra("tweet", tweet);
-//                setResult(RESULT_OK, intent);
-//                finish();
-//            }
-//
-//            @Override
-//            public void onFailure(Throwable error, String content) {
-//                if (Utils.isNetworkAvailable(getApplicationContext())) {
-//                    notifyUser(getBaseContext(), getString(R.string.msg_send_fail));
-//                } else {
-//                    notifyUser(getBaseContext(), getString(R.string.msg_network_unavailble));
-//                }
-//                Log.d("DEBUG", error.toString());
-//                Log.d("DEBUG", content);
-//            }
-//        });
-//    }
-
-    private void notifyUser(Context baseContext, String msg) {
+    private void notifyUser(String msg) {
         Crouton.showText(this, msg, Utils.STYLE);
     }
 }

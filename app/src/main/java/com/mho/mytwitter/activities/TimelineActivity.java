@@ -1,12 +1,13 @@
 package com.mho.mytwitter.activities;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mho.mytwitter.R;
 import com.mho.mytwitter.adapters.TweetArrayAdapter;
+import com.mho.mytwitter.fragments.ComposeDiaglog;
 import com.mho.mytwitter.helpers.EndlessScrollListener;
 import com.mho.mytwitter.helpers.TwitterApplication;
 import com.mho.mytwitter.helpers.TwitterClient;
@@ -20,6 +21,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -32,7 +34,8 @@ import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 
-public class TimelineActivity extends SherlockActivity {
+public class TimelineActivity extends SherlockFragmentActivity
+        implements ComposeDiaglog.ComposeDialogListener {
 
     private static final int MAX_RESULT_COUNT = 25;
 
@@ -111,6 +114,19 @@ public class TimelineActivity extends SherlockActivity {
             }
         });
 
+        lvTweets.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), DetailedViewActivity.class);
+                Tweet tweet = tweets.get(position);
+                intent.putExtra("tweet", tweet);
+
+                Log.d("DEBUG", tweet.toString());
+                // fire intent
+                startActivity(intent);
+            }
+        });
+
         tweets = new ArrayList<Tweet>();
         tweetsAdapter = new TweetArrayAdapter(this, tweets);
         lvTweets.setAdapter(tweetsAdapter);
@@ -125,14 +141,7 @@ public class TimelineActivity extends SherlockActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
+
 
     private void populateTimeline(int count, long sinceId, long maxId) {
 
@@ -160,7 +169,7 @@ public class TimelineActivity extends SherlockActivity {
                         List<Tweet> newTweets = Tweet.fromJsonArray(jsonArray);
 
                         // infinite scroll and not adding new tweets to top
-                        if(sinceId < 0) {
+                        if (sinceId < 0) {
                             Log.d("DEBUG", "infinite scroll");
                             tweetsAdapter.addAll(newTweets);
                         } else {  // refresh
@@ -169,10 +178,10 @@ public class TimelineActivity extends SherlockActivity {
                             // save all new tweets to top of list
                             tweets.addAll(0, newTweets);
                             tweetsAdapter.notifyDataSetChanged();
-
-                            // Notify PullToRefreshLayout that the refresh has finished
-                            mPullToRefreshLayout.setRefreshComplete();
                         }
+
+                        // Notify PullToRefreshLayout that the refresh has finished
+                        mPullToRefreshLayout.setRefreshComplete();
                     }
 
                     @Override
@@ -185,16 +194,26 @@ public class TimelineActivity extends SherlockActivity {
     }
 
     public void displayComposePanel(MenuItem item) {
-        Intent i = new Intent(this, ComposeActivity.class);
+//        Bundle bundle = new Bundle();
+//
+//        ComposeDiaglog composeDiaglog = ComposeDiaglog.newInstance("Compose Tweet");
+//        composeDiaglog.show(getFragmentManager(), "fragment_compose");
+
+        Intent i = new Intent(TimelineActivity.this, ComposeActivity.class);
         startActivityForResult(i, Utils.COMPOSE_REQUEST_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("DEBUG", String.valueOf(requestCode));
-//        if((requestCode == Utils.COMPOSE_REQUEST_CODE)) {
+        Log.d("DEBUG", "Back to timeline: " + String.valueOf(requestCode));
+        if ((requestCode == Utils.COMPOSE_REQUEST_CODE) && (resultCode == RESULT_OK)) {
+            Tweet latestTweet = data.getParcelableExtra("tweet");
+            if (latestTweet == null) {
+                Log.d("DEBUG", "tweet is null");
+            } else {
+                Log.d("DEBUG", "latestTWeet: " + latestTweet.toString());
+            }
 //            Tweet latestTweet = data.getParcelableExtra("tweet");
-//            Log.d("DEBUG", latestTweet.toString());
 //
 //            // add tweet to top of container
 //            tweets.add(0, latestTweet);
@@ -202,6 +221,19 @@ public class TimelineActivity extends SherlockActivity {
 //            lvTweets.setSelection(0);
 //
 //            tweetsAdapter.notifyDataSetChanged();
-//        }
+        }
+    }
+
+    @Override
+    public void onFinishTweet(Tweet newTweet) {
+        // post new tweet to top of timeline
+        Log.d("DEBUG", newTweet.toString());
+
+        // add tweet to top of container
+        tweets.add(0, newTweet);
+        tweetsAdapter.notifyDataSetChanged();
+
+        // show list at beginning
+        lvTweets.setSelection(0);
     }
 }

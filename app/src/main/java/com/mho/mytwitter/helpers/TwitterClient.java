@@ -47,7 +47,8 @@ public class TwitterClient extends OAuthBaseClient {
             int count,
             long sinceId,
             long maxId,
-            JsonHttpResponseHandler handler) {
+            AsyncHttpResponseHandler handler) {
+
         String apiUrl = getApiUrl(HOME_TIMELINE_PATH);
 
         // NOTE: if there are no parameters, pass null instead
@@ -72,32 +73,18 @@ public class TwitterClient extends OAuthBaseClient {
         return params;
     }
 
-    public void verifyCredentials(JsonHttpResponseHandler handler)
-    {
+    public void verifyCredentials(JsonHttpResponseHandler handler) {
         String apiUrl = getApiUrl(VERIFY_CREDENTIALS_PATH);
         client.get(apiUrl, null, handler);
     }
 
-    public void sendTweet(String tweet, JsonHttpResponseHandler handler)
-    {
+    public void postTweet(String body, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl(UPDATE_PATH);
-        RequestParams requestParams = new RequestParams();
-        requestParams.put("status", tweet);
+        RequestParams params = new RequestParams();
+        params.put("status", body);
 
-        Log.d("DEBUG", requestParams.toString());
-
-        client.post(apiUrl, requestParams, handler);
-    }
-
-    public void sendTweet(String tweet, AsyncHttpResponseHandler handler)
-    {
-        String apiUrl = getApiUrl(UPDATE_PATH);
-        RequestParams requestParams = new RequestParams();
-        requestParams.put("status", tweet);
-
-        Log.d("DEBUG", requestParams.toString());
-
-        client.post(apiUrl, requestParams, handler);
+        Log.d("DEBUG", "mofo");
+        getClient().post(apiUrl, params, handler);
     }
 
     // CHANGE THIS
