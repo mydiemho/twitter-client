@@ -1,6 +1,6 @@
 package com.mho.mytwitter.activities;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -18,6 +18,7 @@ import org.json.JSONArray;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -26,9 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
+import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshLayout;
+import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 
-public class TimelineActivity extends SherlockFragmentActivity {
+public class TimelineActivity extends SherlockActivity {
 
     private static final int MAX_RESULT_COUNT = 25;
 
@@ -36,6 +40,8 @@ public class TimelineActivity extends SherlockFragmentActivity {
     private List<Tweet> tweets;
     private ArrayAdapter<Tweet> tweetsAdapter;
     private ListView lvTweets;
+
+    private PullToRefreshLayout mPullToRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,47 @@ public class TimelineActivity extends SherlockFragmentActivity {
 
         twitterClient = TwitterApplication.getTwitterClient();
 
+        setUpPullToRefresh();
+        setUpViews();
+
+        // first request to a timeline endpoint should only specify a count
+        populateTimeline(MAX_RESULT_COUNT);
+    }
+
+    private void populateTimeline(int maxResultCount) {
+        populateTimeline(MAX_RESULT_COUNT, -1, -1);
+    }
+
+    private void setUpPullToRefresh() {
+        // Now find the PullToRefreshLayout to setup
+        mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.timeline_layout);
+
+        // Now setup the PullToRefreshLayout
+        ActionBarPullToRefresh.from(this)
+                // Mark All Children as pullable
+                .allChildrenArePullable()
+                        // Set a OnRefreshListener
+                .listener(new OnRefreshListener() {
+                    @Override
+                    public void onRefreshStarted(View view) {
+
+                        Log.d("DEBUG", "refresh started");
+                        long sinceId = -1;
+
+                        // not a first request
+                        if (!tweets.isEmpty()) {
+                            sinceId = tweets.get(0).getTweetId();
+                        }
+
+                        // for refresh, maxId doesn't matter
+                        populateTimeline(MAX_RESULT_COUNT, sinceId, -1);
+                    }
+                })
+                        // Finally commit the setup to our PullToRefreshLayout
+                .setup(mPullToRefreshLayout);
+    }
+
+    private void setUpViews() {
         lvTweets = (ListView) findViewById(R.id.lvTweets);
         lvTweets.setOnScrollListener(new EndlessScrollListener() {
             @Override
@@ -67,9 +114,6 @@ public class TimelineActivity extends SherlockFragmentActivity {
         tweets = new ArrayList<Tweet>();
         tweetsAdapter = new TweetArrayAdapter(this, tweets);
         lvTweets.setAdapter(tweetsAdapter);
-
-        // first request to a timeline endpoint should only specify a count
-        populateTimeline(MAX_RESULT_COUNT, 0, 0);
     }
 
     @Override
@@ -100,7 +144,7 @@ public class TimelineActivity extends SherlockFragmentActivity {
         fetchTweets(count, sinceId, maxId);
     }
 
-    private void fetchTweets(int count, long sinceId, long maxId) {
+    private void fetchTweets(int count, final long sinceId, long maxId) {
         setProgressBarIndeterminateVisibility(true);
 
         twitterClient.getHomeTimeline(
@@ -110,11 +154,25 @@ public class TimelineActivity extends SherlockFragmentActivity {
                 new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(JSONArray jsonArray) {
-//                        Log.d("DEBUG", jsonArray.toString());
+                        Log.d("DEBUG", jsonArray.toString());
                         setProgressBarIndeterminateVisibility(false);
 
                         List<Tweet> newTweets = Tweet.fromJsonArray(jsonArray);
-                        tweetsAdapter.addAll(newTweets);
+
+                        // infinite scroll and not adding new tweets to top
+                        if(sinceId < 0) {
+                            Log.d("DEBUG", "infinite scroll");
+                            tweetsAdapter.addAll(newTweets);
+                        } else {  // refresh
+                            Log.d("DEBUG", "refreshing");
+
+                            // save all new tweets to top of list
+                            tweets.addAll(0, newTweets);
+                            tweetsAdapter.notifyDataSetChanged();
+
+                            // Notify PullToRefreshLayout that the refresh has finished
+                            mPullToRefreshLayout.setRefreshComplete();
+                        }
                     }
 
                     @Override

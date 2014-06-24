@@ -24,8 +24,11 @@ dependencies {
 
     // to use actionbarsherlock
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-//    compile 'com.android.support:support-v4:19.0.+'
+    compile 'com.android.support:support-v4:19.0.+'
 
     // to use splitter
     compile 'com.google.guava:guava:17.0'
+
+    // pull-to-refresh
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abs:+'
 }

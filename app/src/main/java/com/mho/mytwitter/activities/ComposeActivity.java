@@ -1,6 +1,6 @@
 package com.mho.mytwitter.activities;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
-public class ComposeActivity extends SherlockFragmentActivity {
+public class ComposeActivity extends SherlockActivity {
 
     private static final int MAX_CHAR_COUNT = 140;
     private TwitterClient twitterClient;
