@@ -215,6 +215,8 @@ public class TimelineActivity extends SherlockFragmentActivity
                             for (Tweet newTweet : newTweets) {
                                 newTweet.getUser().save();
                                 newTweet.save();
+
+                                Log.d(TAG, "saving tweet: " + newTweet.getTweetId());
                             }
                             ActiveAndroid.setTransactionSuccessful();
                         } finally {

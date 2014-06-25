@@ -13,22 +13,6 @@ import android.os.Parcelable;
 @Table(name = "Users")
 public class User extends Model implements Parcelable {
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setScreenName(String screenName) {
-        this.screenName = screenName;
-    }
-
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
-    }
-
     // Define table fields, avoid duplicates based on a unique ID
     @Column(name = "user_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private long userId;
