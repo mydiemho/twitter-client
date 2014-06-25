@@ -1,5 +1,7 @@
 package com.mho.mytwitter.models;
 
+import com.google.common.base.Objects;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -9,12 +11,13 @@ import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 @Table(name = "Users")
 public class User extends Model implements Parcelable {
 
     // Define table fields, avoid duplicates based on a unique ID
-    @Column(name = "user_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    @Column(name = "user_id")
     private long userId;
 
     // Define table fields
@@ -43,6 +46,7 @@ public class User extends Model implements Parcelable {
             user.profileImageUrl = jsonObject.getString("profile_image_url");
         } catch (JSONException e) {
             e.printStackTrace();
+            Log.d("DEBUG", "error converting to user");
             return null;
         }
 
@@ -94,4 +98,14 @@ public class User extends Model implements Parcelable {
             return new User[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("userId", userId)
+                .add("name", name)
+                .add("screenName", screenName)
+                .add("profileImageUrl", profileImageUrl)
+                .toString();
+    }
 }
