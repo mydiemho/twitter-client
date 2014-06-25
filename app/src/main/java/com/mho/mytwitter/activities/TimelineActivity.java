@@ -63,9 +63,6 @@ public class TimelineActivity extends SherlockFragmentActivity
 
         setUpPullToRefresh();
         setUpViews();
-
-        // first request to a timeline endpoint should only specify a count
-        populateTimeline(MAX_RESULT_COUNT);
     }
 
     private void populateTimeline(int maxResultCount) {
@@ -123,10 +120,20 @@ public class TimelineActivity extends SherlockFragmentActivity
 
     private void loadTweets() {
         List<Tweet> tweets = Tweet.getAll();
+
+        // only fetch new tweets if we have exhausted local db
+        if(tweets.isEmpty()) {
+            Log.d(TAG, "nothing in db");
+            // first request to a timeline endpoint should only specify a count
+            populateTimeline(MAX_RESULT_COUNT);
+            return;
+        }
+
         Log.d(TAG, "loading tweets from db");
-        Log.d(TAG, tweets.toString());
-        Log.d(TAG, String.valueOf(tweets.size()));
+        Log.d(TAG, "db size: " + tweets.size());
         tweetsAdapter.addAll(tweets);
+
+
     }
 
     private void setUpDisplayDetailedView() {
@@ -200,6 +207,7 @@ public class TimelineActivity extends SherlockFragmentActivity
                         setProgressBarIndeterminateVisibility(false);
 
                         List<Tweet> newTweets = Tweet.fromJsonArray(jsonArray);
+                        Log.d(TAG, "fetched item count: " + newTweets.size());
 
                         // save tweets to db
                         ActiveAndroid.beginTransaction();

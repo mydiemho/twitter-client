@@ -22,6 +22,22 @@ import static com.activeandroid.annotation.Column.ForeignKeyAction;
 @Table(name = "Tweets")
 public class Tweet extends Model implements Parcelable {
 
+    public void setTweetId(long tweetId) {
+        this.tweetId = tweetId;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     // Define table fields
     @Column(name = "tweet_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private long tweetId;
