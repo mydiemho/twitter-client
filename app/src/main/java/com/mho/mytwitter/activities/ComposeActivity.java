@@ -6,7 +6,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mho.mytwitter.R;
-import com.mho.mytwitter.helpers.TwitterApplication;
+import com.mho.mytwitter.apps.TwitterApplication;
 import com.mho.mytwitter.helpers.TwitterClient;
 import com.mho.mytwitter.helpers.Utils;
 import com.mho.mytwitter.models.Tweet;
@@ -151,13 +151,8 @@ public class ComposeActivity extends SherlockFragmentActivity {
                 Tweet tweet = Tweet.fromJsonObject(response);
                 Log.d("DEBUG", "tweet: " + tweet);
 
-                // parent intent
                 Intent data = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("tweet", tweet);
-                // Pass relevant data back as a result
-                data.putExtras(bundle);
-                // Activity finished ok, return the data
+                data.putExtra("tweet", tweet);
                 setResult(RESULT_OK, data);
 
                 // closes the activity, go back and pass data to Timeline activity

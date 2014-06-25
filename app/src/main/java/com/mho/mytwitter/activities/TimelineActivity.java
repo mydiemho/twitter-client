@@ -4,12 +4,14 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.activeandroid.ActiveAndroid;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mho.mytwitter.R;
 import com.mho.mytwitter.adapters.TweetArrayAdapter;
+import com.mho.mytwitter.apps.TwitterApplication;
 import com.mho.mytwitter.fragments.ComposeDiaglog;
+import com.mho.mytwitter.helpers.CustomisedHeaderTransformer;
 import com.mho.mytwitter.helpers.EndlessScrollListener;
-import com.mho.mytwitter.helpers.TwitterApplication;
 import com.mho.mytwitter.helpers.TwitterClient;
 import com.mho.mytwitter.helpers.Utils;
 import com.mho.mytwitter.models.Tweet;
@@ -31,6 +33,7 @@ import java.util.List;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.Options;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 
@@ -38,6 +41,7 @@ public class TimelineActivity extends SherlockFragmentActivity
         implements ComposeDiaglog.ComposeDialogListener {
 
     private static final int MAX_RESULT_COUNT = 25;
+    private static final String TAG = TimelineActivity.class.getSimpleName() + "DEBUG";
 
     private TwitterClient twitterClient;
     private List<Tweet> tweets;
@@ -74,7 +78,16 @@ public class TimelineActivity extends SherlockFragmentActivity
 
         // Now setup the PullToRefreshLayout
         ActionBarPullToRefresh.from(this)
-                // Mark All Children as pullable
+                .options(Options.create()
+                        // Here we make the refresh scroll distance to 75% of the GridView height
+                        .scrollDistance(.75f)
+                                // Here we define a custom header layout which will be inflated and used
+                        .headerLayout(R.layout.customised_header)
+                                // Here we define a custom header transformer which will alter the header
+                                // based on the current pull-to-refresh state
+                        .headerTransformer(new CustomisedHeaderTransformer())
+                        .build())
+                        // Mark All Children as pullable
                 .allChildrenArePullable()
                         // Set a OnRefreshListener
                 .listener(new OnRefreshListener() {
@@ -99,24 +112,28 @@ public class TimelineActivity extends SherlockFragmentActivity
 
     private void setUpViews() {
         lvTweets = (ListView) findViewById(R.id.lvTweets);
-        lvTweets.setOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to your AdapterView
+        tweets = new ArrayList<Tweet>();
+        tweetsAdapter = new TweetArrayAdapter(this, tweets);
+        lvTweets.setAdapter(tweetsAdapter);
 
-                // get lowest id received from previous request,
-                // subtract 1 to page through a timeline without receiving redundant Tweets
-                long maxId = tweetsAdapter.getItem(totalItemsCount - 1).getTweetId() - 1;
+        setUpInfiniteScroll();
+        setUpDisplayDetailedView();
+        loadTweets();
+    }
 
-                // don't care about new tweets, so use -1 for sinceId
-                populateTimeline(MAX_RESULT_COUNT, -1, maxId);
-            }
-        });
+    private void loadTweets() {
+        List<Tweet> tweets = Tweet.getAll();
+        Log.d(TAG, "loading tweets from db");
+        Log.d(TAG, tweets.toString());
+        Log.d(TAG, String.valueOf(tweets.size()));
+        tweetsAdapter.addAll(tweets);
+    }
 
+    private void setUpDisplayDetailedView() {
         lvTweets.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("DEBUG", "item click");
                 Intent intent = new Intent(getApplicationContext(), DetailedViewActivity.class);
                 Tweet tweet = tweets.get(position);
                 intent.putExtra("tweet", tweet);
@@ -126,10 +143,29 @@ public class TimelineActivity extends SherlockFragmentActivity
                 startActivity(intent);
             }
         });
+    }
 
-        tweets = new ArrayList<Tweet>();
-        tweetsAdapter = new TweetArrayAdapter(this, tweets);
-        lvTweets.setAdapter(tweetsAdapter);
+    private void setUpInfiniteScroll() {
+        lvTweets.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to your AdapterView
+
+                // only fetch new data if we have reached the end of local database
+                Log.d(TAG, "infinite scroll");
+                Log.d(TAG, "totalItemsCount: " + totalItemsCount);
+                Log.d(TAG, "array size: " + tweets.size());
+                if (totalItemsCount >= tweets.size()) {
+                    // get lowest id received from previous request,
+                    // subtract 1 to page through a timeline without receiving redundant Tweets
+                    long maxId = tweetsAdapter.getItem(totalItemsCount - 1).getTweetId() - 1;
+
+                    // don't care about new tweets, so use -1 for sinceId
+                    populateTimeline(MAX_RESULT_COUNT, -1, maxId);
+                }
+            }
+        });
     }
 
     @Override
@@ -141,12 +177,10 @@ public class TimelineActivity extends SherlockFragmentActivity
         return super.onCreateOptionsMenu(menu);
     }
 
-
-
     private void populateTimeline(int count, long sinceId, long maxId) {
 
         if (!Utils.isNetworkAvailable(this)) {
-            Crouton.makeText(this, getString(R.string.msg_network_unavailble), Utils.STYLE).show();
+            notifyUser(getString(R.string.msg_network_unavailble));
             return;
         }
 
@@ -163,17 +197,32 @@ public class TimelineActivity extends SherlockFragmentActivity
                 new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(JSONArray jsonArray) {
-                        Log.d("DEBUG", jsonArray.toString());
                         setProgressBarIndeterminateVisibility(false);
 
                         List<Tweet> newTweets = Tweet.fromJsonArray(jsonArray);
 
+                        // save tweets to db
+                        ActiveAndroid.beginTransaction();
+                        try {
+                            for (Tweet newTweet : newTweets) {
+                                newTweet.getUser().save();
+                                newTweet.save();
+                            }
+                            ActiveAndroid.setTransactionSuccessful();
+                        } finally {
+                            ActiveAndroid.endTransaction();
+                            Log.d(TAG, "saved to db");
+                        }
+
+                        List<Tweet> tweets = Tweet.getAll();
+                        Log.d(TAG, "db size: " + tweets.size());
+
                         // infinite scroll and not adding new tweets to top
                         if (sinceId < 0) {
-                            Log.d("DEBUG", "infinite scroll");
+                            Log.d(TAG, "infinite scroll");
                             tweetsAdapter.addAll(newTweets);
                         } else {  // refresh
-                            Log.d("DEBUG", "refreshing");
+                            Log.d(TAG, "refreshing");
 
                             // save all new tweets to top of list
                             tweets.addAll(0, newTweets);
@@ -186,19 +235,27 @@ public class TimelineActivity extends SherlockFragmentActivity
 
                     @Override
                     public void onFailure(Throwable throwable, String s) {
-                        Log.d("DEBUG", throwable.toString());
-                        Log.d("DEBUG", s);
+                        Log.d(TAG, throwable.toString());
+                        Log.d(TAG, s);
+                    }
+
+                    @Override
+                    protected void handleFailureMessage(Throwable e, String responseBody) {
+                        // do something when
+                        Log.d(TAG, e.toString());
+                        Log.d(TAG, responseBody);
+
+                        notifyUser(getString(R.string.exceed_rate_limit));
                     }
                 }
         );
     }
 
-    public void displayComposePanel(MenuItem item) {
-//        Bundle bundle = new Bundle();
-//
-//        ComposeDiaglog composeDiaglog = ComposeDiaglog.newInstance("Compose Tweet");
-//        composeDiaglog.show(getFragmentManager(), "fragment_compose");
+    private void notifyUser(String msg) {
+        Crouton.makeText(this, msg, Utils.STYLE).show();
+    }
 
+    public void displayComposePanel(MenuItem item) {
         Intent i = new Intent(TimelineActivity.this, ComposeActivity.class);
         startActivityForResult(i, Utils.COMPOSE_REQUEST_CODE);
     }
@@ -208,19 +265,19 @@ public class TimelineActivity extends SherlockFragmentActivity
         Log.d("DEBUG", "Back to timeline: " + String.valueOf(requestCode));
         if ((requestCode == Utils.COMPOSE_REQUEST_CODE) && (resultCode == RESULT_OK)) {
             Tweet latestTweet = data.getParcelableExtra("tweet");
-            if (latestTweet == null) {
-                Log.d("DEBUG", "tweet is null");
-            } else {
-                Log.d("DEBUG", "latestTWeet: " + latestTweet.toString());
-            }
-//            Tweet latestTweet = data.getParcelableExtra("tweet");
-//
-//            // add tweet to top of container
-//            tweets.add(0, latestTweet);
-//            // show list at beginning
-//            lvTweets.setSelection(0);
-//
-//            tweetsAdapter.notifyDataSetChanged();
+
+            // persist data
+            latestTweet.getUser().save();
+            latestTweet.save();
+
+            Log.d("DEBUG", "latestTweet: " + latestTweet.toString());
+
+            // add tweet to top of container
+            tweets.add(0, latestTweet);
+            // show list at beginning
+            lvTweets.setSelection(0);
+
+            tweetsAdapter.notifyDataSetChanged();
         }
     }
 

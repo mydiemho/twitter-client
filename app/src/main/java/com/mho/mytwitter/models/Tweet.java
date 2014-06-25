@@ -2,6 +2,11 @@ package com.mho.mytwitter.models;
 
 import com.google.common.base.Objects;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,11 +17,31 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tweet implements Parcelable {
+import static com.activeandroid.annotation.Column.ForeignKeyAction;
+
+@Table(name = "Tweets")
+public class Tweet extends Model implements Parcelable {
+
+    // Define table fields
+    @Column(name = "tweet_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private long tweetId;
+
+    // Define table fields
+    @Column(name = "body")
     private String body;
+
+    // Define table fields
+    @Column(name = "created_at")
     private String createdAt;
+
+    // Define table fields
+    @Column(name = "user", onUpdate = ForeignKeyAction.CASCADE, onDelete = ForeignKeyAction.CASCADE)
     private User user;
+
+    // necessary to use ActiveAndroid
+    public Tweet() {
+        super();
+    }
 
     public static List<Tweet> fromJsonArray(JSONArray jsonArray) {
         List<Tweet> tweets = new ArrayList<Tweet>(jsonArray.length());
@@ -31,7 +56,7 @@ public class Tweet implements Parcelable {
             }
 
             Tweet tweet = fromJsonObject(tweetJsonObject);
-            if(tweet != null) {
+            if (tweet != null) {
                 tweets.add(tweet);
             }
         }
@@ -39,8 +64,7 @@ public class Tweet implements Parcelable {
         return tweets;
     }
 
-    public static Tweet fromJsonObject(JSONObject jsonObject)
-    {
+    public static Tweet fromJsonObject(JSONObject jsonObject) {
         Tweet tweet = new Tweet();
 
         // populate object with extracted values;
@@ -49,10 +73,9 @@ public class Tweet implements Parcelable {
             tweet.tweetId = jsonObject.getLong("id_str");
             tweet.createdAt = jsonObject.getString("created_at");
             tweet.user = User.fromJsonObject(jsonObject.getJSONObject("user"));
-//            Log.d("DEBUG", tweet.toString());
         } catch (JSONException e) {
             e.printStackTrace();
-            return  null;
+            return null;
         }
 
         return tweet;
@@ -96,14 +119,11 @@ public class Tweet implements Parcelable {
         dest.writeParcelable(this.user, 0);
     }
 
-    public Tweet() {
-    }
-
     private Tweet(Parcel in) {
         this.tweetId = in.readLong();
         this.body = in.readString();
         this.createdAt = in.readString();
-        this.user = in.readParcelable(((Object) user).getClass().getClassLoader());
+        this.user = in.readParcelable(User.class.getClassLoader());
     }
 
     public static Parcelable.Creator<Tweet> CREATOR = new Parcelable.Creator<Tweet>() {
@@ -115,4 +135,12 @@ public class Tweet implements Parcelable {
             return new Tweet[size];
         }
     };
+
+    public static List<Tweet> getAll() {
+        return new Select()
+                .from(Tweet.class)
+//                .where("Category = ?", category.getId())
+                .orderBy("tweet_id DESC")
+                .execute();
+    }
 }

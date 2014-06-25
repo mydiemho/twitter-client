@@ -2,7 +2,7 @@ package com.mho.mytwitter.fragments;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mho.mytwitter.R;
-import com.mho.mytwitter.helpers.TwitterApplication;
+import com.mho.mytwitter.apps.TwitterApplication;
 import com.mho.mytwitter.helpers.TwitterClient;
 import com.mho.mytwitter.helpers.Utils;
 import com.mho.mytwitter.models.Tweet;

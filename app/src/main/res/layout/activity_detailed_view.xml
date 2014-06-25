@@ -13,8 +13,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp" />
+            android:layout_alignParentTop="true" />
 
     <LinearLayout
             android:id="@+id/llNames"
@@ -45,35 +44,25 @@
     </LinearLayout>
 
     <TextView
-            android:id="@+id/tvCharsLeft"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/llNames"
-            android:text="20" />
-
-    <Button
-            android:id="@+id/btnTweet"
+            android:id="@+id/tvBody"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/action_button_tweet"
-            android:background="#4099FF"
-            android:gravity="center"
-            android:onClick="composeTweet"
-            android:layout_marginLeft="10dp"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@+id/tvCharsLeft"/>
+            android:layout_below="@+id/ivProfileImage"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="10dp"
+            android:autoLink="all"
+            android:linksClickable="true"/>
 
-    <EditText
-            android:id="@+id/etTweet"
-            android:layout_width="wrap_content"
+    <ImageView
+            android:id="@+id/ivMedia"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:ems="10"
-            android:hint="@string/compose_hint"
-            android:layout_below="@+id/ivUserProfileImage"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/tvBody"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:gravity="top"/>
+            android:layout_alignParentBottom="true"
+            android:visibility="invisible"/>
+
+
 
 </RelativeLayout>

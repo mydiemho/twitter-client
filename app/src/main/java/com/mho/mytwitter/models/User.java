@@ -1,17 +1,37 @@
 package com.mho.mytwitter.models;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class User implements Parcelable {
+@Table(name = "Users")
+public class User extends Model implements Parcelable {
 
+    // Define table fields, avoid duplicates based on a unique ID
+    @Column(name = "user_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
     private long userId;
+
+    // Define table fields
+    @Column(name = "name")
     private String name;
+
+    // Define table fields
+    @Column(name = "screen_name")
     private String screenName;
+
+    // Define table fields
+    @Column(name = "profile_image_url")
     private String profileImageUrl;
+
+    public User() {
+        super();
+    }
 
     public static User fromJsonObject(JSONObject jsonObject) {
         User user = new User();
@@ -56,9 +76,6 @@ public class User implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.screenName);
         dest.writeString(this.profileImageUrl);
-    }
-
-    public User() {
     }
 
     private User(Parcel in) {
