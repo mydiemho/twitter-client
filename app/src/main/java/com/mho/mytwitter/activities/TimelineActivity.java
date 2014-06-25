@@ -130,6 +130,9 @@ public class TimelineActivity extends SherlockFragmentActivity
         }
 
         Log.d(TAG, "loading tweets from db");
+        for(Tweet tweet : tweets){
+            Log.d(TAG, "loaded tweet: " + tweet.getTweetId());
+        }
         Log.d(TAG, "db size: " + tweets.size());
         tweetsAdapter.addAll(tweets);
 
