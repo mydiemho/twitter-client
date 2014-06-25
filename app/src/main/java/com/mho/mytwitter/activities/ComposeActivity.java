@@ -56,13 +56,6 @@ public class ComposeActivity extends SherlockFragmentActivity {
         // change action bar icon to be user's profile image
         User user = TwitterApplication.getUser();
 
-//        try {
-//            Drawable profileImage = TwitterApplication.drawableFromUrl(user.getProfileImageUrl());
-//            getSupportActionBar().setIcon(profileImage);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         // change action bar title to
         getSupportActionBar().setTitle(user.getName());
         getSupportActionBar().setSubtitle(user.getScreenName());
@@ -71,8 +64,6 @@ public class ComposeActivity extends SherlockFragmentActivity {
 
     private void setUpViews() {
         etTweet = (EditText) findViewById(R.id.etTweet);
-//        tvCharsLeft = (TextView) findViewById(R.id.tvCharsLeft);
-//        btnTweet = (Button) findViewById(R.id.btnTweet);
         etTweet.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -84,7 +75,6 @@ public class ComposeActivity extends SherlockFragmentActivity {
 
                 // update chars count label
                 int charsLeft = MAX_CHAR_COUNT - etTweet.getText().length();
-//                Log.d("DEBUG", String.valueOf(charsLeft));
 
                 if (charsLeft < 0) {
                     tvCharsLeft.setTextColor(

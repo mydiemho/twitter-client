@@ -9,8 +9,6 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mho.mytwitter.R;
 import com.mho.mytwitter.adapters.TweetArrayAdapter;
 import com.mho.mytwitter.apps.TwitterApplication;
-import com.mho.mytwitter.fragments.ComposeDiaglog;
-import com.mho.mytwitter.helpers.CustomisedHeaderTransformer;
 import com.mho.mytwitter.helpers.EndlessScrollListener;
 import com.mho.mytwitter.helpers.TwitterClient;
 import com.mho.mytwitter.helpers.Utils;
@@ -33,12 +31,10 @@ import java.util.List;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
-import uk.co.senab.actionbarpulltorefresh.library.Options;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 
-public class TimelineActivity extends SherlockFragmentActivity
-        implements ComposeDiaglog.ComposeDialogListener {
+public class TimelineActivity extends SherlockFragmentActivity {
 
     private static final int MAX_RESULT_COUNT = 25;
     private static final String TAG = TimelineActivity.class.getSimpleName() + "DEBUG";
@@ -71,22 +67,11 @@ public class TimelineActivity extends SherlockFragmentActivity
 
     private void setUpPullToRefresh() {
         // Now find the PullToRefreshLayout to setup
-        mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.timeline_layout);
+        mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.ptr_timeline_layout);
 
         // Now setup the PullToRefreshLayout
         ActionBarPullToRefresh.from(this)
-                .options(Options.create()
-                        // Here we make the refresh scroll distance to 75% of the GridView height
-                        .scrollDistance(.75f)
-                                // Here we define a custom header layout which will be inflated and used
-                        .headerLayout(R.layout.customised_header)
-                                // Here we define a custom header transformer which will alter the header
-                                // based on the current pull-to-refresh state
-                        .headerTransformer(new CustomisedHeaderTransformer())
-                        .build())
-                        // Mark All Children as pullable
                 .allChildrenArePullable()
-                        // Set a OnRefreshListener
                 .listener(new OnRefreshListener() {
                     @Override
                     public void onRefreshStarted(View view) {
@@ -103,7 +88,8 @@ public class TimelineActivity extends SherlockFragmentActivity
                         populateTimeline(MAX_RESULT_COUNT, sinceId, -1);
                     }
                 })
-                        // Finally commit the setup to our PullToRefreshLayout
+
+                // Finally commit the setup to our PullToRefreshLayout
                 .setup(mPullToRefreshLayout);
     }
 
@@ -130,9 +116,6 @@ public class TimelineActivity extends SherlockFragmentActivity
         }
 
         Log.d(TAG, "loading tweets from db");
-        for(Tweet tweet : tweets){
-            Log.d(TAG, "loaded tweet: " + tweet.getTweetId());
-        }
         Log.d(TAG, "db size: " + tweets.size());
         tweetsAdapter.addAll(tweets);
 
@@ -164,8 +147,6 @@ public class TimelineActivity extends SherlockFragmentActivity
 
                 // only fetch new data if we have reached the end of local database
                 Log.d(TAG, "infinite scroll");
-                Log.d(TAG, "totalItemsCount: " + totalItemsCount);
-                Log.d(TAG, "array size: " + tweets.size());
                 if (totalItemsCount >= tweets.size()) {
                     // get lowest id received from previous request,
                     // subtract 1 to page through a timeline without receiving redundant Tweets
@@ -218,8 +199,6 @@ public class TimelineActivity extends SherlockFragmentActivity
                             for (Tweet newTweet : newTweets) {
                                 newTweet.getUser().save();
                                 newTweet.save();
-
-                                Log.d(TAG, "saving tweet: " + newTweet.getTweetId());
                             }
                             ActiveAndroid.setTransactionSuccessful();
                         } finally {
@@ -232,10 +211,10 @@ public class TimelineActivity extends SherlockFragmentActivity
 
                         // infinite scroll and not adding new tweets to top
                         if (sinceId < 0) {
-                            Log.d(TAG, "infinite scroll");
+                            Log.d(TAG, "fetch: infinite scroll");
                             tweetsAdapter.addAll(newTweets);
                         } else {  // refresh
-                            Log.d(TAG, "refreshing");
+                            Log.d(TAG, "fetch: refreshing");
 
                             // save all new tweets to top of list
                             tweets.addAll(0, newTweets);
@@ -292,18 +271,5 @@ public class TimelineActivity extends SherlockFragmentActivity
 
             tweetsAdapter.notifyDataSetChanged();
         }
-    }
-
-    @Override
-    public void onFinishTweet(Tweet newTweet) {
-        // post new tweet to top of timeline
-        Log.d("DEBUG", newTweet.toString());
-
-        // add tweet to top of container
-        tweets.add(0, newTweet);
-        tweetsAdapter.notifyDataSetChanged();
-
-        // show list at beginning
-        lvTweets.setSelection(0);
     }
 }
