@@ -37,7 +37,7 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 public class TimelineActivity extends SherlockFragmentActivity {
 
     private static final int MAX_RESULT_COUNT = 25;
-    private static final String TAG = TimelineActivity.class.getSimpleName() + "DEBUG";
+    private static final String TAG = TimelineActivity.class.getSimpleName() + "_DEBUG";
 
     private TwitterClient twitterClient;
     private List<Tweet> tweets;
@@ -71,7 +71,7 @@ public class TimelineActivity extends SherlockFragmentActivity {
 
         // Now setup the PullToRefreshLayout
         ActionBarPullToRefresh.from(this)
-                .allChildrenArePullable()
+//                .allChildrenArePullable()
                 .listener(new OnRefreshListener() {
                     @Override
                     public void onRefreshStarted(View view) {

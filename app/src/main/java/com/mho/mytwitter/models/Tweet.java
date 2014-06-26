@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,8 @@ import static com.activeandroid.annotation.Column.ForeignKeyAction;
 
 @Table(name = "Tweets")
 public class Tweet extends Model implements Parcelable {
+
+    private static final String TAG = Tweet.class.getSimpleName() + "_DEBUG";
 
     // Define table fields
     @Column(name = "tweet_id", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
@@ -37,6 +40,11 @@ public class Tweet extends Model implements Parcelable {
     // Define table fields
     @Column(name = "user", onUpdate = ForeignKeyAction.CASCADE, onDelete = ForeignKeyAction.CASCADE)
     private User user;
+
+    // Define table fields
+    @Column(name = "media_url", onUpdate = ForeignKeyAction.CASCADE,
+            onDelete = ForeignKeyAction.CASCADE)
+    private String mediaUrl = "";
 
     // necessary to use ActiveAndroid
     public Tweet() {
@@ -73,6 +81,21 @@ public class Tweet extends Model implements Parcelable {
             tweet.tweetId = jsonObject.getLong("id_str");
             tweet.createdAt = jsonObject.getString("created_at");
             tweet.user = User.fromJsonObject(jsonObject.getJSONObject("user"));
+
+            JSONObject entities = jsonObject.getJSONObject("entities");
+
+            try {
+                JSONArray media = entities.getJSONArray("media");
+                JSONObject mediaObject = media.getJSONObject(0);
+                tweet.mediaUrl = mediaObject.getString("media_url");
+
+                Log.d(TAG, "mediaUrl not null");
+                Log.d(TAG, tweet.toString());
+            } catch (JSONException exception) {
+                Log.d(TAG, exception.toString());
+                Log.d(TAG, tweet.getMediaUrl());
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -97,12 +120,18 @@ public class Tweet extends Model implements Parcelable {
         return user;
     }
 
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("user", user.getName())
                 .add("tweetId", tweetId)
                 .add("body", body)
+                .add("createdAt", createdAt)
+                .add("user", user)
+                .add("mediaUrl", mediaUrl)
                 .toString();
     }
 
@@ -117,6 +146,7 @@ public class Tweet extends Model implements Parcelable {
         dest.writeString(this.body);
         dest.writeString(this.createdAt);
         dest.writeParcelable(this.user, 0);
+        dest.writeString(this.mediaUrl);
     }
 
     private Tweet(Parcel in) {
@@ -124,6 +154,7 @@ public class Tweet extends Model implements Parcelable {
         this.body = in.readString();
         this.createdAt = in.readString();
         this.user = in.readParcelable(User.class.getClassLoader());
+        this.mediaUrl = in.readString();
     }
 
     public static Parcelable.Creator<Tweet> CREATOR = new Parcelable.Creator<Tweet>() {

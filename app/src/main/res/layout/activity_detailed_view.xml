@@ -53,16 +53,53 @@
             android:autoLink="all"
             android:linksClickable="true"/>
 
+
     <ImageView
             android:id="@+id/ivMedia"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="200dp"
             android:layout_below="@+id/tvBody"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
             android:visibility="invisible"/>
 
+    <LinearLayout
+            android:id="@+id/llReply"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ivMedia"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true">
 
+        <EditText
+                android:id="@+id/etReply"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:textSize="10sp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true" />
+
+        <TextView
+                android:id="@+id/tvCharsLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_max_chars"
+                android:textColor="@android:color/darker_gray"/>
+
+        <Button
+                android:id="@+id/btnTweet"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/action_button_tweet"
+                android:textColor="@color/tweet_button_background_color" />
+        <!--android:style="@style/Widget.Sherlock.ActionButton" />-->
+
+    </LinearLayout>
 
 </RelativeLayout>
