@@ -76,11 +76,12 @@ public class TimelineActivity extends SherlockFragmentActivity {
 
         // Now setup the PullToRefreshLayout
         ActionBarPullToRefresh.from(this)
+                .allChildrenArePullable()
                 .listener(new OnRefreshListener() {
                     @Override
                     public void onRefreshStarted(View view) {
 
-                        Log.d("DEBUG", "refresh started");
+                        Log.d(TAG, "refresh started");
                         long sinceId = -1;
 
                         // not a first request
@@ -88,13 +89,12 @@ public class TimelineActivity extends SherlockFragmentActivity {
                             sinceId = tweets.get(0).getTweetId();
                         }
 
+                        Log.d(TAG, "sinceId: " + sinceId);
                         // for refresh, maxId doesn't matter
                         populateTimeline(MAX_RESULT_COUNT, sinceId, -1);
                     }
                 })
-
-                // Finally commit the setup to our PullToRefreshLayout
-                .setup(mPullToRefreshLayout);
+                .setup(mPullToRefreshLayout);// Finally commit the setup to our PullToRefreshLayout
     }
 
     private void setUpViews() {
@@ -192,10 +192,10 @@ public class TimelineActivity extends SherlockFragmentActivity {
                 new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(JSONArray jsonArray) {
-                        setProgressBarIndeterminateVisibility(false);
 
                         List<Tweet> newTweets = Tweet.fromJsonArray(jsonArray);
                         Log.d(TAG, "fetched item count: " + newTweets.size());
+                        Log.d(TAG, newTweets.toString());
 
                         // save tweets to db
                         ActiveAndroid.beginTransaction();
@@ -207,11 +207,10 @@ public class TimelineActivity extends SherlockFragmentActivity {
                             ActiveAndroid.setTransactionSuccessful();
                         } finally {
                             ActiveAndroid.endTransaction();
-                            Log.d(TAG, "saved to db");
+                            Log.d(TAG, String.format("saved %d items to db", newTweets.size()));
                         }
 
-                        List<Tweet> tweets = Tweet.getAll();
-                        Log.d(TAG, "db size: " + tweets.size());
+                        Log.d(TAG, "db size: " + Tweet.getAll().size());
 
                         // infinite scroll and not adding new tweets to top
                         if (sinceId < 0) {
@@ -224,9 +223,6 @@ public class TimelineActivity extends SherlockFragmentActivity {
                             tweets.addAll(0, newTweets);
                             tweetsAdapter.notifyDataSetChanged();
                         }
-
-                        // Notify PullToRefreshLayout that the refresh has finished
-                        mPullToRefreshLayout.setRefreshComplete();
                     }
 
                     @Override
@@ -242,6 +238,16 @@ public class TimelineActivity extends SherlockFragmentActivity {
                         Log.d(TAG, responseBody);
 
                         notifyUser(getString(R.string.exceed_rate_limit));
+                    }
+
+                    @Override
+                    public void onFinish() {
+
+                        setProgressBarIndeterminateVisibility(false);
+
+                        // Notify PullToRefreshLayout that the refresh has finished
+                        mPullToRefreshLayout.setRefreshComplete();
+                        super.onFinish();
                     }
                 }
         );

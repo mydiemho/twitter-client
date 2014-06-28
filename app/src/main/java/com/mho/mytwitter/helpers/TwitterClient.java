@@ -9,6 +9,7 @@ import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
+import android.util.Log;
 
 /*
  * 
@@ -24,6 +25,7 @@ import android.content.Context;
  */
 public class TwitterClient extends OAuthBaseClient {
 
+    private static final String TAG = TwitterClient.class.getSimpleName() + "_DEBUG";
     private static final Class<? extends Api> REST_API_CLASS = TwitterApi.class;
 
     private static final String REST_URL = "https://api.twitter.com/1.1";
@@ -52,6 +54,8 @@ public class TwitterClient extends OAuthBaseClient {
 
         // NOTE: if there are no parameters, pass null instead
         RequestParams params = getRequestParams(count, sinceId, maxId);
+
+        Log.d(TAG, params.toString());
 
         client.get(apiUrl, params, handler);
     }
