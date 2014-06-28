@@ -9,7 +9,6 @@ import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
-import android.util.Log;
 
 /*
  * 
@@ -83,7 +82,6 @@ public class TwitterClient extends OAuthBaseClient {
         RequestParams params = new RequestParams();
         params.put("status", body);
 
-        Log.d("DEBUG", "mofo");
         getClient().post(apiUrl, params, handler);
     }
 
