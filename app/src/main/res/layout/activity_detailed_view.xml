@@ -29,7 +29,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/foo"
-                android:textSize="15sp"
+                android:textColor="@android:color/primary_text_light"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_marginTop="10dp"
                 android:layout_alignTop="@+id/ivProfileImage"/>
 
@@ -38,7 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="New Text"
-                android:textColor="@android:color/darker_gray"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/secondary_text_light"
                 android:textSize="10sp" />
 
     </LinearLayout>

@@ -1,5 +1,7 @@
 package com.mho.mytwitter.activities;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mho.mytwitter.R;
 import com.mho.mytwitter.apps.TwitterApplication;
@@ -10,13 +12,11 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
-public class DetailedViewActivity extends Activity {
+public class DetailedViewActivity extends SherlockFragmentActivity {
 
     private static final int MAX_CHAR_COUNT = 140;
     private static final String TAG = DetailedViewActivity.class.getSimpleName() + "_DEBUG";
@@ -51,14 +51,19 @@ public class DetailedViewActivity extends Activity {
         twitterClient = TwitterApplication.getTwitterClient();
         tweet = getIntent().getParcelableExtra("tweet");
 
+        setUpActionBar();
         setUpViews();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.detailed_view, menu);
+        getSupportMenuInflater().inflate(R.menu.detailed_view, menu);
         return true;
+    }
+
+    private void setUpActionBar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void setUpViews() {

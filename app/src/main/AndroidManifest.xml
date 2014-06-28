@@ -43,7 +43,7 @@
 
         <activity
                 android:name=".activities.TimelineActivity"
-                android:label="@string/title_activity_timeline">
+                android:label="@string/title_activity_timeline" >
         </activity>
 
         <activity
@@ -54,7 +54,8 @@
 
         <activity
                 android:name=".activities.DetailedViewActivity"
-                android:label="@string/title_activity_detailed_view">
+                android:label="@string/title_activity_detailed_view"
+                android:theme="@style/DetailedTheme">
         </activity>
     </application>
 

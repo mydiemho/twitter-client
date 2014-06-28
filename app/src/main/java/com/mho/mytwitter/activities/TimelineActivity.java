@@ -52,6 +52,7 @@ public class TimelineActivity extends SherlockFragmentActivity {
 
         // Request the action bar progress bar feature before setting content view
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        setUpActionBar();
 
         setContentView(R.layout.activity_timeline);
 
@@ -59,6 +60,10 @@ public class TimelineActivity extends SherlockFragmentActivity {
 
         setUpPullToRefresh();
         setUpViews();
+    }
+
+    private void setUpActionBar() {
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     private void populateTimeline(int maxResultCount) {

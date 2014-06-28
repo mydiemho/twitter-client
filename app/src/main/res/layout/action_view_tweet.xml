@@ -13,5 +13,6 @@
             android:layout_marginRight="5dp"
             android:background="@color/timeline_activity_action_bar_background"
             android:textColor="@color/tweet_button_text_color"
+            android:textAppearance="?android:attr/textAppearanceButton"
             android:layout_marginLeft="10dp"/>
 </LinearLayout>

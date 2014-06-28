@@ -6,18 +6,34 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <!-- Timeline actionbar background -->
+    <!-- Timeline actionbar -->
     <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/timeline_activity_action_bar_background</item>
     </style>
 
-    <!-- Compose actionbar background -->
+    <!-- Compose actionbar -->
     <style name="ComposeTheme" parent="AppTheme">
-        <item name="android:actionBarStyle">@style/ComposeActionBar</item>
+        <item name="android:actionBarStyle">@style/ComposeTheme.ActionBar</item>
     </style>
 
-    <style name="ComposeActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+    <style name="ComposeTheme.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/compose_activity_action_bar_background</item>
     </style>
+
+
+    <!-- Detail view actionbar -->
+    <style name="DetailedTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/DetailedTheme.ActionBar</item>
+    </style>
+
+    <style name="DetailedTheme.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:titleTextStyle">@style/DetailedTheme.ActionBar.TitleTextStyle</item>
+        <item name="android:background">@color/detailed_activity_action_bar_background</item>
+    </style>
+
+    <style name="DetailedTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/detailed_activity_title_color</item>
+    </style>
+
 
 </resources>

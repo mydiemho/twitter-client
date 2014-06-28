@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="compose_activity_action_bar_background">#ffffff</color>
+
     <color name="twitter_over_char_limit">#FF3333</color>
     <color name="twitter_normal_text">#aaa</color>
+
     <color name="tweet_button_text_color">#ffffff</color>
     <color name="tweet_button_background_color">#00aced</color>
 
 
     <!--http://designpieces.com/2012/12/twitter-colour-palette/-->
     <color name="timeline_activity_action_bar_background">#00aced</color>
+
+    <color name="detailed_activity_action_bar_background">#00aced</color>
+    <color name="detailed_activity_title_color">#ffffff</color>
 
 </resources>
