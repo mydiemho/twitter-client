@@ -13,7 +13,6 @@ import org.json.JSONObject;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,11 +88,11 @@ public class Tweet extends Model implements Parcelable {
                 JSONObject mediaObject = media.getJSONObject(0);
                 tweet.mediaUrl = mediaObject.getString("media_url");
 
-                Log.d(TAG, "mediaUrl not null");
-                Log.d(TAG, tweet.toString());
+//                Log.d(TAG, "mediaUrl not null");
+//                Log.d(TAG, tweet.toString());
             } catch (JSONException exception) {
-                Log.d(TAG, exception.toString());
-                Log.d(TAG, tweet.getMediaUrl());
+//                Log.d(TAG, exception.toString());
+//                Log.d(TAG, tweet.getMediaUrl());
             }
 
         } catch (JSONException e) {
@@ -129,9 +128,9 @@ public class Tweet extends Model implements Parcelable {
         return Objects.toStringHelper(this)
                 .add("tweetId", tweetId)
                 .add("body", body)
-                .add("createdAt", createdAt)
-                .add("user", user)
-                .add("mediaUrl", mediaUrl)
+//                .add("createdAt", createdAt)
+//                .add("user", user)
+//                .add("mediaUrl", mediaUrl)
                 .toString();
     }
 

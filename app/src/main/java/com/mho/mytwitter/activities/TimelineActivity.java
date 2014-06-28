@@ -76,25 +76,24 @@ public class TimelineActivity extends SherlockFragmentActivity {
 
         // Now setup the PullToRefreshLayout
         ActionBarPullToRefresh.from(this)
+                .allChildrenArePullable()
                 .listener(new OnRefreshListener() {
                     @Override
                     public void onRefreshStarted(View view) {
 
-                        Log.d("DEBUG", "refresh started");
                         long sinceId = -1;
 
                         // not a first request
                         if (!tweets.isEmpty()) {
-                            sinceId = tweets.get(0).getTweetId();
+                            // needs to add 1, since_id returns inclusive results
+                            sinceId = tweets.get(0).getTweetId() + 1;
                         }
 
                         // for refresh, maxId doesn't matter
                         populateTimeline(MAX_RESULT_COUNT, sinceId, -1);
                     }
                 })
-
-                // Finally commit the setup to our PullToRefreshLayout
-                .setup(mPullToRefreshLayout);
+                .setup(mPullToRefreshLayout);// Finally commit the setup to our PullToRefreshLayout
     }
 
     private void setUpViews() {
@@ -113,17 +112,12 @@ public class TimelineActivity extends SherlockFragmentActivity {
 
         // only fetch new tweets if we have exhausted local db
         if(tweets.isEmpty()) {
-            Log.d(TAG, "nothing in db");
             // first request to a timeline endpoint should only specify a count
             populateTimeline(MAX_RESULT_COUNT);
             return;
         }
 
-        Log.d(TAG, "loading tweets from db");
-        Log.d(TAG, "db size: " + tweets.size());
         tweetsAdapter.addAll(tweets);
-
-
     }
 
     private void setUpDisplayDetailedView() {
@@ -192,10 +186,10 @@ public class TimelineActivity extends SherlockFragmentActivity {
                 new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(JSONArray jsonArray) {
-                        setProgressBarIndeterminateVisibility(false);
 
                         List<Tweet> newTweets = Tweet.fromJsonArray(jsonArray);
                         Log.d(TAG, "fetched item count: " + newTweets.size());
+                        Log.d(TAG, newTweets.toString());
 
                         // save tweets to db
                         ActiveAndroid.beginTransaction();
@@ -207,11 +201,9 @@ public class TimelineActivity extends SherlockFragmentActivity {
                             ActiveAndroid.setTransactionSuccessful();
                         } finally {
                             ActiveAndroid.endTransaction();
-                            Log.d(TAG, "saved to db");
                         }
 
-                        List<Tweet> tweets = Tweet.getAll();
-                        Log.d(TAG, "db size: " + tweets.size());
+                        Log.d(TAG, "db size: " + Tweet.getAll().size());
 
                         // infinite scroll and not adding new tweets to top
                         if (sinceId < 0) {
@@ -224,9 +216,6 @@ public class TimelineActivity extends SherlockFragmentActivity {
                             tweets.addAll(0, newTweets);
                             tweetsAdapter.notifyDataSetChanged();
                         }
-
-                        // Notify PullToRefreshLayout that the refresh has finished
-                        mPullToRefreshLayout.setRefreshComplete();
                     }
 
                     @Override
@@ -242,6 +231,16 @@ public class TimelineActivity extends SherlockFragmentActivity {
                         Log.d(TAG, responseBody);
 
                         notifyUser(getString(R.string.exceed_rate_limit));
+                    }
+
+                    @Override
+                    public void onFinish() {
+
+                        setProgressBarIndeterminateVisibility(false);
+
+                        // Notify PullToRefreshLayout that the refresh has finished
+                        mPullToRefreshLayout.setRefreshComplete();
+                        super.onFinish();
                     }
                 }
         );
