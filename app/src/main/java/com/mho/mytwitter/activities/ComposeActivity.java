@@ -1,5 +1,6 @@
 package com.mho.mytwitter.activities;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -11,12 +12,11 @@ import com.mho.mytwitter.helpers.TwitterClient;
 import com.mho.mytwitter.helpers.Utils;
 import com.mho.mytwitter.models.Tweet;
 import com.mho.mytwitter.models.User;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -32,9 +33,18 @@ public class ComposeActivity extends SherlockFragmentActivity {
 
     private static final int MAX_CHAR_COUNT = 140;
     private TwitterClient twitterClient;
-    private EditText etTweet;
+
+    // custom action bar layout views
+    private ImageView ivProfileImage;
+    private TextView tvName;
+    private TextView tvScreenName;
+
+    // action view items
     private TextView tvCharsLeft;
     private Button btnTweet;
+
+    // view
+    private EditText etTweet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,18 +58,26 @@ public class ComposeActivity extends SherlockFragmentActivity {
     }
 
     private void tweakActionBar() {
-        /* Custom ActionBar Layout */
-//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        getSupportActionBar().setCustomView(R.layout.actionbar_compose);
+        /* To use custom actionBar Layout */
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.actionbar_compose);
 
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        // change action bar icon to be user's profile image
         User user = TwitterApplication.getUser();
 
-        // change action bar title to
-        getSupportActionBar().setTitle(user.getName());
-        getSupportActionBar().setSubtitle(user.getScreenName());
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xffffff));
+        // set up custom layout view
+        ivProfileImage = (ImageView) findViewById(R.id.ivProfileImage);
+        tvName = (TextView) findViewById(R.id.tvName);
+        tvScreenName = (TextView) findViewById(R.id.tvScreenName);
+
+        Picasso
+                .with(this)
+                .load(user.getProfileImageUrl())
+                .fit()
+                .centerCrop()
+                .into(ivProfileImage);
+
+        tvName.setText(user.getName());
+        tvScreenName.setText(user.getScreenName());
     }
 
     private void setUpViews() {

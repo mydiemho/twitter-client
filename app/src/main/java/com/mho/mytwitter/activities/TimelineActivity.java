@@ -71,7 +71,6 @@ public class TimelineActivity extends SherlockFragmentActivity {
 
         // Now setup the PullToRefreshLayout
         ActionBarPullToRefresh.from(this)
-//                .allChildrenArePullable()
                 .listener(new OnRefreshListener() {
                     @Override
                     public void onRefreshStarted(View view) {

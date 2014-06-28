@@ -5,8 +5,19 @@
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <!-- Timeline actionbar background -->
     <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">@color/twitter_timeline_action_bar_background</item>
+        <item name="android:background">@color/timeline_activity_action_bar_background</item>
+    </style>
+
+    <!-- Compose actionbar background -->
+    <style name="ComposeTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/ComposeActionBar</item>
+    </style>
+
+    <style name="ComposeActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/compose_activity_action_bar_background</item>
     </style>
 
 </resources>
