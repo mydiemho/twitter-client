@@ -4,7 +4,7 @@ import com.google.common.base.Splitter;
 
 import com.mho.mytwitter.R;
 import com.mho.mytwitter.models.Tweet;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import android.content.Context;
 import android.text.format.DateUtils;
@@ -56,10 +56,12 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
         // clean out previous image
         viewHolder.ivProfileImage.setImageResource(android.R.color.transparent);
 
-        ImageLoader imageLoader = ImageLoader.getInstance();
-
         // populate views with tweet data
-        imageLoader.displayImage(tweet.getUser().getProfileImageUrl(), viewHolder.ivProfileImage);
+        Picasso
+                .with(getContext())
+                .load(tweet.getUser().getProfileImageUrl())
+                .into(viewHolder.ivProfileImage);
+
         viewHolder.tvName.setText(tweet.getUser().getName());
         viewHolder.tvScreenName.setText(tweet.getUser().getScreenName());
         viewHolder.tvTimestamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));

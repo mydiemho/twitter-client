@@ -3,9 +3,6 @@ package com.mho.mytwitter.apps;
 import com.activeandroid.ActiveAndroid;
 import com.mho.mytwitter.helpers.TwitterClient;
 import com.mho.mytwitter.models.User;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import android.content.Context;
 
@@ -27,15 +24,6 @@ public class TwitterApplication extends com.activeandroid.app.Application {
     public void onCreate() {
         super.onCreate();
         TwitterApplication.context = this;
-
-        // Create global configuration and initialize ImageLoader with this configuration
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder().
-                cacheInMemory().cacheOnDisc().build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-                getApplicationContext())
-                .defaultDisplayImageOptions(defaultOptions)
-                .build();
-        ImageLoader.getInstance().init(config);
 
         ActiveAndroid.initialize(this);
     }
