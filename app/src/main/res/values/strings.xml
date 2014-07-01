@@ -7,7 +7,7 @@
     <string name="login_label">Connect to Twitter</string>
     <string name="title_activity_timeline">TimelineActivity</string>
     <string name="foo">foo</string>
-    <string name="msg_network_unavailble">You\'re offline</string>
+    <string name="msg_network_unavailable">You\'re offline</string>
     <string name="action_compose">Compose</string>
     <string name="title_activity_compose">ComposeActivity</string>
     <string name="action_button_tweet">Tweet</string>

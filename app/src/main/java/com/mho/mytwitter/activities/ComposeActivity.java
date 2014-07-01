@@ -171,7 +171,7 @@ public class ComposeActivity extends ActionBarActivity {
                 if (Utils.isNetworkAvailable(getApplicationContext())) {
                     notifyUser(getString(R.string.msg_send_fail));
                 } else {
-                    notifyUser(getString(R.string.msg_network_unavailble));
+                    notifyUser(getString(R.string.msg_network_unavailable));
                 }
                 Log.d("DEBUG", "error: " + error.toString());
                 Log.d("DEBUG", "content: " + content);

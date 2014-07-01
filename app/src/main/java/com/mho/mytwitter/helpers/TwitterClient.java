@@ -9,6 +9,7 @@ import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
+import android.util.Log;
 
 /*
  * 
@@ -24,10 +25,12 @@ import android.content.Context;
  */
 public class TwitterClient extends OAuthBaseClient {
 
+    private static final String TAG = TwitterClient.class.getSimpleName() + "_DEBUG";
     private static final Class<? extends Api> REST_API_CLASS = TwitterApi.class;
 
     private static final String REST_URL = "https://api.twitter.com/1.1";
     private static final String HOME_TIMELINE_PATH = "/statuses/home_timeline.json";
+    private static final String MENTIONS_TIMELINE_PATH = "/statuses/mentions_timeline.json";
     private static final String VERIFY_CREDENTIALS_PATH = "/account/verify_credentials.json";
     private static final String UPDATE_PATH = "/statuses/update.json";
 
@@ -53,23 +56,26 @@ public class TwitterClient extends OAuthBaseClient {
         // NOTE: if there are no parameters, pass null instead
         RequestParams params = getRequestParams(count, sinceId, maxId);
 
+
+        Log.d(TAG, "geronimo -> home");
+        Log.d(TAG, params.toString());
         client.get(apiUrl, params, handler);
     }
 
-    private RequestParams getRequestParams(int count, long sinceId, long maxId) {
-        RequestParams params = new RequestParams();
+    public void getMentionsTimeline(
+            int count,
+            long sinceId,
+            long maxId,
+            AsyncHttpResponseHandler handler) {
 
-        //first request to a timeline endpoint should only specify a count
-        if (sinceId > 0) {
-            params.put("since_id", String.valueOf(sinceId));
-        }
+        String apiUrl = getApiUrl(MENTIONS_TIMELINE_PATH);
 
-        if (maxId > 0) {
-            params.put("max_id", String.valueOf(maxId));
-        }
-        params.put("count", String.valueOf(count));
+        // NOTE: if there are no parameters, pass null instead
+        RequestParams params = getRequestParams(count, sinceId, maxId);
 
-        return params;
+        Log.d(TAG, "geronimo -> mentions");
+        Log.d(TAG, params.toString());
+        client.get(apiUrl, params, handler);
     }
 
     public void verifyCredentials(JsonHttpResponseHandler handler) {
@@ -85,22 +91,18 @@ public class TwitterClient extends OAuthBaseClient {
         getClient().post(apiUrl, params, handler);
     }
 
-    // CHANGE THIS
-    // DEFINE METHODS for different API endpoints here
-//	public void getInterestingnessList(AsyncHttpResponseHandler handler) {
-//		String apiUrl = getApiUrl("?nojsoncallback=1&method=flickr.interestingness.getList");
-//		// Can specify query string params directly or through RequestParams.
-//		RequestParams params = new RequestParams();
-//		params.put("format", "json");
-//		client.get(apiUrl, params, handler);
-//	}
+    private RequestParams getRequestParams(int count, long sinceId, long maxId) {
+        RequestParams params = new RequestParams();
 
-	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
-         * 	  i.e getApiUrl("statuses/home_timeline.json");
-	 * 2. Define the parameters to pass to the request (query or body)
-	 *    i.e RequestParams params = new RequestParams("foo", "bar");
-	 * 3. Define the request method and make a call to the client
-	 *    i.e client.get(apiUrl, params, handler);
-	 *    i.e client.post(apiUrl, params, handler);
-	 */
+        if (sinceId > 0) {
+            params.put("since_id", String.valueOf(sinceId));
+        }
+
+        if (maxId > 0) {
+            params.put("max_id", String.valueOf(maxId));
+        }
+        params.put("count", String.valueOf(count));
+
+        return params;
+    }
 }

@@ -75,7 +75,7 @@ public class LoginActivity extends OAuthLoginActivity<TwitterClient> {
     // This should be tied to a button used to login
     public void loginToTwitter(View view) {
         if(!Utils.isNetworkAvailable(this)) {
-            Crouton.makeText(this, getString(R.string.msg_network_unavailble), Utils.STYLE).show();
+            Crouton.makeText(this, getString(R.string.msg_network_unavailable), Utils.STYLE).show();
             return;
         }
         getClient().connect();
