@@ -1,10 +1,5 @@
 package com.mho.mytwitter.activities;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mho.mytwitter.R;
 import com.mho.mytwitter.apps.TwitterApplication;
@@ -18,9 +13,14 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,7 +29,7 @@ import android.widget.TextView;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
-public class ComposeActivity extends SherlockFragmentActivity {
+public class ComposeActivity extends ActionBarActivity {
 
     private static final int MAX_CHAR_COUNT = 140;
     private TwitterClient twitterClient;
@@ -59,8 +59,8 @@ public class ComposeActivity extends SherlockFragmentActivity {
 
     private void tweakActionBar() {
         /* To use custom actionBar Layout */
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.actionbar_compose);
+        getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getActionBar().setCustomView(R.layout.actionbar_compose);
 
         User user = TwitterApplication.getUser();
 
@@ -116,8 +116,7 @@ public class ComposeActivity extends SherlockFragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the options menu from XML; this adds items to the action bar if it is present.
-        MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.compose, menu);
+        getMenuInflater().inflate(R.menu.compose, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -125,7 +124,7 @@ public class ComposeActivity extends SherlockFragmentActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem actionViewItem = menu.findItem(R.id.action_tweet);
-        View v = actionViewItem.getActionView();
+        View v = MenuItemCompat.getActionView(actionViewItem);
         btnTweet = (Button) v.findViewById(R.id.btnTweet);
 
         btnTweet.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +137,7 @@ public class ComposeActivity extends SherlockFragmentActivity {
         });
 
         actionViewItem = menu.findItem(R.id.action_chars_label);
-        v = actionViewItem.getActionView();
+        v = MenuItemCompat.getActionView(actionViewItem);
         tvCharsLeft = (TextView) v.findViewById(R.id.tvCharsLeft);
 
         return super.onPrepareOptionsMenu(menu);

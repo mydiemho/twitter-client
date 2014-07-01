@@ -22,13 +22,12 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    // to use actionbarsherlock
-    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'com.android.support:support-v4:19.1.0'
+    // to use android support
+    compile "com.android.support:appcompat-v7:19.1.0"
 
     // to use splitter
     compile 'com.google.guava:guava:17.0'
 
     // pull-to-refresh
-    compile 'com.github.chrisbanes.actionbarpulltorefresh:extra-abs:+'
+    compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
 }

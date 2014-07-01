@@ -1,9 +1,5 @@
 package com.mho.mytwitter.activities;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.activeandroid.ActiveAndroid;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mho.mytwitter.R;
@@ -18,7 +14,10 @@ import org.json.JSONArray;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -29,12 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
-import uk.co.senab.actionbarpulltorefresh.extras.actionbarsherlock.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 
-public class TimelineActivity extends SherlockFragmentActivity {
+public class TimelineActivity extends ActionBarActivity {
 
     private static final int MAX_RESULT_COUNT = 25;
     private static final String TAG = TimelineActivity.class.getSimpleName() + "_DEBUG";
@@ -111,7 +110,7 @@ public class TimelineActivity extends SherlockFragmentActivity {
         List<Tweet> tweets = Tweet.getAll();
 
         // only fetch new tweets if we have exhausted local db
-        if(tweets.isEmpty()) {
+        if (tweets.isEmpty()) {
             // first request to a timeline endpoint should only specify a count
             populateTimeline(MAX_RESULT_COUNT);
             return;
@@ -160,9 +159,7 @@ public class TimelineActivity extends SherlockFragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the options menu from XML; this adds items to the action bar if it is present.
-        MenuInflater inflater = getSupportMenuInflater();
-        inflater.inflate(R.menu.timeline, menu);
-
+        getMenuInflater().inflate(R.menu.timeline, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -250,9 +247,20 @@ public class TimelineActivity extends SherlockFragmentActivity {
         Crouton.makeText(this, msg, Utils.STYLE).show();
     }
 
-    public void displayComposePanel(MenuItem item) {
+    public void displayComposePanel() {
         Intent i = new Intent(TimelineActivity.this, ComposeActivity.class);
         startActivityForResult(i, Utils.COMPOSE_REQUEST_CODE);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_compose) {
+            displayComposePanel();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

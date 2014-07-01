@@ -1,8 +1,5 @@
 package com.mho.mytwitter.activities;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mho.mytwitter.R;
 import com.mho.mytwitter.apps.TwitterApplication;
@@ -16,9 +13,12 @@ import org.json.JSONObject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +27,7 @@ import android.widget.TextView;
 
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
-public class DetailedViewActivity extends SherlockFragmentActivity {
+public class DetailedViewActivity extends ActionBarActivity {
 
     private static final int MAX_CHAR_COUNT = 140;
     private static final String TAG = DetailedViewActivity.class.getSimpleName() + "_DEBUG";
@@ -60,7 +60,7 @@ public class DetailedViewActivity extends SherlockFragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getSupportMenuInflater().inflate(R.menu.detailed_view, menu);
+        getMenuInflater().inflate(R.menu.detailed_view, menu);
         return true;
     }
 

@@ -1,12 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
       tools:context=".TimelineActivity">
 
     <item android:id="@+id/action_compose"
           android:icon="@drawable/ic_action_compose"
           android:title="@string/action_compose"
-          android:onClick="displayComposePanel"
-          android:showAsAction="ifRoom|withText"
+          app:showAsAction="ifRoom|withText"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 </menu>
