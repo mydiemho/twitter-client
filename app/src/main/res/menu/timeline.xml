@@ -9,4 +9,11 @@
           app:showAsAction="ifRoom|withText"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
+
+    <item android:id="@+id/action_display_profile"
+          android:icon="@drawable/ic_action_profile"
+          android:title="@string/action_profile"
+          app:showAsAction="ifRoom|withText"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
 </menu>

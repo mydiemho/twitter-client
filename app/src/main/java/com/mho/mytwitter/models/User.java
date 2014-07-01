@@ -32,6 +32,12 @@ public class User extends Model implements Parcelable {
     @Column(name = "profile_image_url")
     private String profileImageUrl;
 
+    @Column(name = "followers_count")
+    private int followersCount;
+
+    @Column(name = "friends_count")
+    private int friendsCount;
+
     public User() {
         super();
     }
@@ -44,6 +50,8 @@ public class User extends Model implements Parcelable {
             user.name = jsonObject.getString("name");
             user.screenName = "@" + jsonObject.getString("screen_name");
             user.profileImageUrl = jsonObject.getString("profile_image_url");
+            user.followersCount = jsonObject.getInt("followers_count");
+            user.friendsCount = jsonObject.getInt("friends_count");
         } catch (JSONException e) {
             e.printStackTrace();
             Log.d("DEBUG", "error converting to user");
@@ -69,6 +77,14 @@ public class User extends Model implements Parcelable {
         return profileImageUrl;
     }
 
+    public int getFollowersCount() {
+        return followersCount;
+    }
+
+    public int getFriendsCount() {
+        return friendsCount;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -80,6 +96,8 @@ public class User extends Model implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.screenName);
         dest.writeString(this.profileImageUrl);
+        dest.writeInt(this.followersCount);
+        dest.writeInt(this.friendsCount);
     }
 
     private User(Parcel in) {
@@ -87,6 +105,8 @@ public class User extends Model implements Parcelable {
         this.name = in.readString();
         this.screenName = in.readString();
         this.profileImageUrl = in.readString();
+        this.followersCount = in.readInt();
+        this.friendsCount = in.readInt();
     }
 
     public static Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
@@ -106,6 +126,8 @@ public class User extends Model implements Parcelable {
                 .add("name", name)
                 .add("screenName", screenName)
                 .add("profileImageUrl", profileImageUrl)
+                .add("followersCount", followersCount)
+                .add("friendsCount", friendsCount)
                 .toString();
     }
 }

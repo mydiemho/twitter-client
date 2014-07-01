@@ -31,7 +31,8 @@ public class TwitterClient extends OAuthBaseClient {
     private static final String REST_URL = "https://api.twitter.com/1.1";
     private static final String HOME_TIMELINE_PATH = "/statuses/home_timeline.json";
     private static final String MENTIONS_TIMELINE_PATH = "/statuses/mentions_timeline.json";
-    private static final String VERIFY_CREDENTIALS_PATH = "/account/verify_credentials.json";
+    private static final String USER_TIMELINE_PATH = "/statuses/user_timeline.json";
+    private static final String MY_INFO_PATH = "/account/verify_credentials.json";
     private static final String UPDATE_PATH = "/statuses/update.json";
 
     // oauth required settings
@@ -78,8 +79,13 @@ public class TwitterClient extends OAuthBaseClient {
         client.get(apiUrl, params, handler);
     }
 
-    public void verifyCredentials(JsonHttpResponseHandler handler) {
-        String apiUrl = getApiUrl(VERIFY_CREDENTIALS_PATH);
+    public void getMyInfo(JsonHttpResponseHandler handler) {
+        String apiUrl = getApiUrl(MY_INFO_PATH);
+        client.get(apiUrl, null, handler);
+    }
+
+    public void getUserTimeline(JsonHttpResponseHandler handler) {
+        String apiUrl = getApiUrl(USER_TIMELINE_PATH);
         client.get(apiUrl, null, handler);
     }
 

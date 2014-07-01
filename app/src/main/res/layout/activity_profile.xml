@@ -1,0 +1,92 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                tools:context="com.mho.mytwitter.activities.ProfileActivity">
+
+    <LinearLayout
+            android:id="@+id/llProfile"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true">
+
+        <ImageView
+                android:id="@+id/ivProfileImage"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"/>
+
+        <TextView
+                android:id="@+id/tvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/foo"
+                android:textSize="15sp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginTop="10dp"
+                android:gravity="center"/>
+
+        <TextView
+                android:id="@+id/tvScreenName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:textSize="10sp"
+                android:textColor="@android:color/secondary_text_light"
+                android:gravity="center"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/llCounts"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/llProfile"
+            android:weightSum="2">
+
+        <TextView
+                android:id="@+id/tvFollowersCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/bar"
+                android:gravity="center"
+                android:layout_weight="1"/>
+
+        <TextView
+                android:id="@+id/tvFriendsCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/foo"
+                android:gravity="center"
+                android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <fragment
+            android:id="@+id/fragmentUserTimeline"
+            android:name="com.mho.mytwitter.fragments.UserTimelineFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/llCounts"
+            tools:layout="@layout/fragment_tweets_list"/>
+
+</RelativeLayout>

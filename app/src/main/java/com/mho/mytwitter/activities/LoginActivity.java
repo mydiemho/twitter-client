@@ -40,7 +40,7 @@ public class LoginActivity extends OAuthLoginActivity<TwitterClient> {
     public void onLoginSuccess() {
 
         // verify credentials to retrieve user's info
-        TwitterApplication.getTwitterClient().verifyCredentials(new JsonHttpResponseHandler() {
+        TwitterApplication.getTwitterClient().getMyInfo(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(JSONObject response) {
                 User user = User.fromJsonObject(response);

@@ -1,68 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.mho.mytwitter">
+    package="com.mho.mytwitter" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-            android:name=".apps.TwitterApplication"
-            android:allowBackup="true"
-            android:icon="@drawable/ic_launcher"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme">
+        android:name=".apps.TwitterApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
 
         <!-- add the following metadata for version and database name -->
         <meta-data
-                android:name="AA_DB_NAME"
-                android:value="TwitterClient.db"/>
+            android:name="AA_DB_NAME"
+            android:value="TwitterClient.db" />
         <meta-data
-                android:name="AA_DB_VERSION"
-                android:value="1"/>
+            android:name="AA_DB_VERSION"
+            android:value="1" />
 
         <activity
-                android:name=".activities.LoginActivity"
-                android:label="@string/app_name">
+            android:name=".activities.LoginActivity"
+            android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                        android:host="mydiemho-twitter-client"
-                        android:scheme="oauth"/>
+                    android:host="mydiemho-twitter-client"
+                    android:scheme="oauth" />
             </intent-filter>
         </activity>
-
         <activity
-                android:name=".activities.TimelineActivity"
-                android:label="@string/title_activity_timeline">
+            android:name=".activities.TimelineActivity"
+            android:label="@string/title_activity_timeline" >
         </activity>
-
         <activity
-                android:name=".activities.ComposeActivity"
-                android:label="@string/title_activity_compose"
-                android:theme="@style/ComposeTheme">
+            android:name=".activities.ComposeActivity"
+            android:label="@string/title_activity_compose"
+            android:theme="@style/ComposeTheme" >
         </activity>
-
         <activity
-                android:name=".activities.DetailedViewActivity"
-                android:label="@string/title_activity_detailed_view"
-                android:theme="@style/DetailedTheme"
-                android:parentActivityName=".activities.TimelineActivity">
+            android:name=".activities.DetailedViewActivity"
+            android:label="@string/title_activity_detailed_view"
+            android:parentActivityName=".activities.TimelineActivity"
+            android:theme="@style/DetailedTheme" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value=".activities.TimelineActivity"/>
-
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.TimelineActivity" />
+        </activity>
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:label="@string/title_activity_profile" >
         </activity>
     </application>
 

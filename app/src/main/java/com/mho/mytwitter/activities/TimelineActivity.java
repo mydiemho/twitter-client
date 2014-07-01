@@ -42,12 +42,16 @@ public class TimelineActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == R.id.action_compose) {
-            displayComposePanel();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_compose:
+                displayComposePanel();
+                return true;
+            case R.id.action_display_profile:
+                displayProfile();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void setupTabs() {
@@ -81,6 +85,11 @@ public class TimelineActivity extends ActionBarActivity {
 
     private void displayComposePanel() {
         Intent i = new Intent(TimelineActivity.this, ComposeActivity.class);
+        startActivityForResult(i, Utils.COMPOSE_REQUEST_CODE);
+    }
+
+    private void displayProfile() {
+        Intent i = new Intent(TimelineActivity.this, ProfileActivity.class);
         startActivityForResult(i, Utils.COMPOSE_REQUEST_CODE);
     }
 
