@@ -125,6 +125,7 @@ public class ProfileActivity extends ActionBarActivity {
                         }
                     });
         } else {
+            hideProgressBar();
             Log.d(TAG, "banner is null");
             mLlProfile.setBackgroundDrawable(new ColorDrawable(R.color.profile_banner_background));
         }

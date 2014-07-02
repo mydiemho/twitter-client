@@ -2,9 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:descendantFocusability="blocksDescendants">
+                android:descendantFocusability="blocksDescendants"
+                android:background="@drawable/bg_card">
 
-    <ImageView
+<ImageView
             android:id="@+id/ivProfileImage"
             android:layout_width="40dp"
             android:layout_height="40dp"
