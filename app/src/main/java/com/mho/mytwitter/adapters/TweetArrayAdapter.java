@@ -1,13 +1,14 @@
 package com.mho.mytwitter.adapters;
 
-import com.google.common.base.Splitter;
-
 import com.mho.mytwitter.R;
+import com.mho.mytwitter.activities.ProfileActivity;
+import com.mho.mytwitter.helpers.Utils;
 import com.mho.mytwitter.models.Tweet;
+import com.mho.mytwitter.models.User;
 import com.squareup.picasso.Picasso;
 
 import android.content.Context;
-import android.text.format.DateUtils;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +16,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
+
+    private static final String TAG = TweetArrayAdapter.class.getSimpleName() + "_DEBUG";
 
     public TweetArrayAdapter(Context context, List<Tweet> tweets) {
         super(context, 0, tweets);
@@ -31,7 +30,7 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         // get data for the current position
-        Tweet tweet = getItem(position);
+        final Tweet tweet = getItem(position);
 
         // Check if an existing view is being reused, otherwise inflate the view
         ViewHolder viewHolder; // view lookup cache stored in tag
@@ -55,6 +54,7 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
 
         // clean out previous image
         viewHolder.ivProfileImage.setImageResource(android.R.color.transparent);
+        viewHolder.ivProfileImage.setTag(tweet.getUser().getUserId());
 
         // populate views with tweet data
         Picasso
@@ -64,9 +64,15 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
 
         viewHolder.tvName.setText(tweet.getUser().getName());
         viewHolder.tvScreenName.setText(tweet.getUser().getScreenName());
-        viewHolder.tvTimestamp.setText(getRelativeTimeAgo(tweet.getCreatedAt()));
+        viewHolder.tvTimestamp.setText(Utils.getRelativeTimeAgo(tweet.getCreatedAt()));
         viewHolder.tvBody.setText(tweet.getBody());
 
+        viewHolder.ivProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchProfileActivity(tweet.getUser());
+            }
+        });
         return convertView;
     }
 
@@ -79,35 +85,12 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
         TextView tvBody;
     }
 
-    public String getRelativeTimeAgo(String rawJsonDate) {
-        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
-        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
-        sf.setLenient(true);
 
-        String relativeDate = "";
-        try {
-            long dateMillis = sf.parse(rawJsonDate).getTime();
 
-            relativeDate = DateUtils.getRelativeTimeSpanString(
-                    dateMillis,
-                    System.currentTimeMillis(),
-                    DateUtils.SECOND_IN_MILLIS).toString();
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if(relativeDate.equals("yesterday")) {
-            return "1d";
-        }
-        // hack to get twitter-like relative time format
-        Iterable<String> tokens = Splitter.on(' ').split(relativeDate);
-//        Log.d("DEBUG", tokens.toString());
-
-        Iterator<String> iterator = tokens.iterator();
-        String value = iterator.next();
-        char unit = iterator.next().charAt(0);
-
-        return value + unit;
+    private void launchProfileActivity(User user) {
+        Intent intent = new Intent(getContext(), ProfileActivity.class);
+        intent.putExtra("user", user);
+        getContext().startActivity(intent);
     }
 }

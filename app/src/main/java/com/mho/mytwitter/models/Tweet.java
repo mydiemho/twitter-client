@@ -128,10 +128,10 @@ public class Tweet extends Model implements Parcelable {
         return Objects.toStringHelper(this)
                 .add("tweetId", tweetId)
                 .add("body", body)
-//                .add("createdAt", createdAt)
+                .add("createdAt", createdAt)
 //                .add("user", user)
 //                .add("mediaUrl", mediaUrl)
-                .toString();
+                .toString() + "\n";
     }
 
     @Override

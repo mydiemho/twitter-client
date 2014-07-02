@@ -1,6 +1,7 @@
 package com.mho.mytwitter.activities;
 
 import com.mho.mytwitter.R;
+import com.mho.mytwitter.apps.TwitterApplication;
 import com.mho.mytwitter.fragments.HomeTimelineFragment;
 import com.mho.mytwitter.fragments.MentionsTimelineFragment;
 import com.mho.mytwitter.fragments.TweetsListFragment;
@@ -90,7 +91,8 @@ public class TimelineActivity extends ActionBarActivity {
 
     private void displayProfile() {
         Intent i = new Intent(TimelineActivity.this, ProfileActivity.class);
-        startActivityForResult(i, Utils.COMPOSE_REQUEST_CODE);
+        i.putExtra("user", TwitterApplication.getUser());
+        startActivity(i);
     }
 
     private void setUpActionBar() {
