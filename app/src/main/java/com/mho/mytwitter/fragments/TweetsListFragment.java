@@ -123,7 +123,7 @@ public abstract class TweetsListFragment extends Fragment {
 
                 Log.d("DEBUG", tweet.toString());
                 // fire intent
-                startActivity(intent);
+                startActivityForResult(intent, Utils.COMPOSE_REQUEST_CODE);
             }
         });
     }

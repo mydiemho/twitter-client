@@ -85,9 +85,6 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
         TextView tvBody;
     }
 
-
-
-
     private void launchProfileActivity(User user) {
         Intent intent = new Intent(getContext(), ProfileActivity.class);
         intent.putExtra("user", user);

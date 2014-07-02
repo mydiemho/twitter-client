@@ -173,7 +173,7 @@ public class DetailedViewActivity extends ActionBarActivity {
     public void postTweet() {
         Log.d("DEBUG", "calling send tweet");
 
-        twitterClient.postTweet(etReply.getText().toString(), new JsonHttpResponseHandler() {
+        twitterClient.postReply(tweet.getTweetId(), etReply.getText().toString(), new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(JSONObject response) {
