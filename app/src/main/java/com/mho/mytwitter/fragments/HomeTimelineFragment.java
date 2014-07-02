@@ -30,6 +30,7 @@ public class HomeTimelineFragment extends TweetsListFragment {
 
     @Override
     protected void fetchTweets(long sinceId, long maxId) {
+        showProgressBar();
         TwitterApplication.getTwitterClient().getHomeTimeline(
                 Utils.MAX_RESULT_COUNT,
                 sinceId,

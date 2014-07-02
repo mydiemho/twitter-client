@@ -15,4 +15,6 @@
     <color name="detailed_activity_action_bar_background">#00aced</color>
     <color name="detailed_activity_title_color">#ffffff</color>
 
+    <color name="profile_banner_background">#717676</color>
+
 </resources>

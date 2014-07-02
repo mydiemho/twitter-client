@@ -4,7 +4,12 @@ import com.mho.mytwitter.R;
 import com.mho.mytwitter.fragments.UserTimelineFragment;
 import com.mho.mytwitter.models.User;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
@@ -12,7 +17,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ProfileActivity extends ActionBarActivity {
@@ -24,15 +31,30 @@ public class ProfileActivity extends ActionBarActivity {
     private TextView mTvScreenName;
     private TextView mTvFollowersCount;
     private TextView mTvFriendsCount;
+    private LinearLayout mLlProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // MUST request the feature before setting content view
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
         setContentView(R.layout.activity_profile);
 
         setUpViews();
         loadProfileInfo();
         addUserTimelineFragment();
+    }
+
+    // Should be called manually when an async task has started
+    public void showProgressBar() {
+        setProgressBarIndeterminateVisibility(true);
+    }
+
+    // Should be called when an async task has finished
+    public void hideProgressBar() {
+        setProgressBarIndeterminateVisibility(false);
     }
 
     private void addUserTimelineFragment() {
@@ -50,9 +72,11 @@ public class ProfileActivity extends ActionBarActivity {
         mTvScreenName = (TextView) findViewById(R.id.tvScreenName);
         mTvFollowersCount = (TextView) findViewById(R.id.tvFollowersCount);
         mTvFriendsCount = (TextView) findViewById(R.id.tvFriendsCount);
+        mLlProfile = (LinearLayout) findViewById(R.id.llProfile);
     }
 
     private void loadProfileInfo() {
+        showProgressBar();
         User user = getIntent().getParcelableExtra("user");
         Log.d(TAG, "load profile info");
         Log.d(TAG, user.toString());
@@ -65,6 +89,39 @@ public class ProfileActivity extends ActionBarActivity {
         mTvScreenName.setText(user.getScreenName());
         mTvFollowersCount.setText(user.getFollowersCount() + " Followers");
         mTvFriendsCount.setText(user.getFriendsCount() + " Following");
+
+        Log.d(TAG, "show banner");
+        if(!user.getProfileBannerUrl().isEmpty()) {
+            Log.d(TAG, user.getProfileBannerUrl().toString());
+            Picasso.with(this)
+                    .load(user.getProfileBannerUrl())
+                    .placeholder(new ColorDrawable(R.color.profile_banner_background))
+                    .error(new ColorDrawable(R.color.profile_banner_background))
+                    .into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            mLlProfile.setBackgroundDrawable(new BitmapDrawable(bitmap));
+                            hideProgressBar();
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Drawable errorDrawable) {
+                            mLlProfile.setBackgroundDrawable(errorDrawable);
+                            hideProgressBar();
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                            Log.d(TAG, "loading banner");
+                            mLlProfile.setBackgroundDrawable(placeHolderDrawable);
+                        }
+
+
+                    });
+        } else {
+            Log.d(TAG, "banner is null");
+            mLlProfile.setBackgroundDrawable(new ColorDrawable(R.color.profile_banner_background));
+        }
     }
 
     @Override

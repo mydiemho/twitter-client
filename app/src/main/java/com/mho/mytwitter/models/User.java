@@ -38,6 +38,9 @@ public class User extends Model implements Parcelable {
     @Column(name = "friends_count")
     private int friendsCount;
 
+    @Column(name = "profile_banner_url")
+    private String profileBannerUrl = "";
+
     public User() {
         super();
     }
@@ -52,10 +55,10 @@ public class User extends Model implements Parcelable {
             user.profileImageUrl = jsonObject.getString("profile_image_url");
             user.followersCount = jsonObject.getInt("followers_count");
             user.friendsCount = jsonObject.getInt("friends_count");
+            user.profileBannerUrl = jsonObject.getString("profile_banner_url");
         } catch (JSONException e) {
             e.printStackTrace();
             Log.d("DEBUG", "error converting to user");
-            return null;
         }
 
         return user;
@@ -85,6 +88,10 @@ public class User extends Model implements Parcelable {
         return friendsCount;
     }
 
+    public String getProfileBannerUrl() {
+        return profileBannerUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -98,6 +105,7 @@ public class User extends Model implements Parcelable {
         dest.writeString(this.profileImageUrl);
         dest.writeInt(this.followersCount);
         dest.writeInt(this.friendsCount);
+        dest.writeString(this.profileBannerUrl);
     }
 
     private User(Parcel in) {
@@ -107,6 +115,7 @@ public class User extends Model implements Parcelable {
         this.profileImageUrl = in.readString();
         this.followersCount = in.readInt();
         this.friendsCount = in.readInt();
+        this.profileBannerUrl = in.readString();
     }
 
     public static Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
@@ -128,6 +137,7 @@ public class User extends Model implements Parcelable {
                 .add("profileImageUrl", profileImageUrl)
                 .add("followersCount", followersCount)
                 .add("friendsCount", friendsCount)
+                .add("profileBannerUrl", profileBannerUrl)
                 .toString();
     }
 }

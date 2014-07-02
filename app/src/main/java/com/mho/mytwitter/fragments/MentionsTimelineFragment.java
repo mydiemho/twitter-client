@@ -15,6 +15,7 @@ public class MentionsTimelineFragment extends TweetsListFragment {
 
     @Override
     protected void fetchTweets(long sinceId, long maxId) {
+        showProgressBar();
         TwitterApplication.getTwitterClient().getMentionsTimeline(
                 Utils.MAX_RESULT_COUNT,
                 sinceId,

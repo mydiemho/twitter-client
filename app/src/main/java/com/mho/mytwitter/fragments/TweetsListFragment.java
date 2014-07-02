@@ -102,7 +102,7 @@ public abstract class TweetsListFragment extends Fragment {
                         if (!mTweets.isEmpty()) {
                             // needs to add 1, since_id returns inclusive results
                             sinceId = mTweets.get(0).getTweetId() + 1;
-                            Log.d(TAG, "sincdId: " + sinceId);
+                            Log.d(TAG, "sinceId: " + sinceId);
                         }
 
                         // for refresh, maxId doesn't matter
@@ -171,7 +171,7 @@ public abstract class TweetsListFragment extends Fragment {
 
                 List<Tweet> newTweets = Tweet.fromJsonArray(jsonArray);
                 Log.d(TAG, "fetched item count: " + newTweets.size());
-                Log.d(TAG, newTweets.toString());
+//                Log.d(TAG, newTweets.toString());
 
                 // save tweets to db
                 saveTweets(newTweets);
@@ -208,7 +208,7 @@ public abstract class TweetsListFragment extends Fragment {
 
             @Override
             public void onFinish() {
-
+                hideProgressBar();
                 mPullToRefreshLayout.setRefreshComplete();
                 super.onFinish();
             }
@@ -230,5 +230,16 @@ public abstract class TweetsListFragment extends Fragment {
 
     private void notifyUser(String msg) {
         Crouton.makeText(getActivity(), msg, Utils.STYLE).show();
+    }
+
+
+    // Should be called manually when an async task has started
+    public void showProgressBar() {
+        getActivity().setProgressBarIndeterminateVisibility(true);
+    }
+
+    // Should be called when an async task has finished
+    public void hideProgressBar() {
+        getActivity().setProgressBarIndeterminateVisibility(false);
     }
 }

@@ -34,6 +34,7 @@ public class UserTimelineFragment extends TweetsListFragment {
 
     @Override
     protected void fetchTweets(long sinceId, long maxId) {
+        showProgressBar();
         Log.d(TAG, "mScreenName: " +  mScreenName);
         TwitterApplication.getTwitterClient().getUserTimeline(mScreenName, getHandler(sinceId));
     }
