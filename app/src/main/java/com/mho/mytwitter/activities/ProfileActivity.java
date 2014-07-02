@@ -90,13 +90,21 @@ public class ProfileActivity extends ActionBarActivity {
         mTvFollowersCount.setText(user.getFollowersCount() + " Followers");
         mTvFriendsCount.setText(user.getFriendsCount() + " Following");
 
+        String profileBannerUrl = user.getProfileBannerUrl();
+
         Log.d(TAG, "show banner");
-        if(!user.getProfileBannerUrl().isEmpty()) {
-            Log.d(TAG, user.getProfileBannerUrl().toString());
+        if(!profileBannerUrl.isEmpty()) {
+
+            // tranfer url to get mobile image
+            profileBannerUrl = profileBannerUrl + "/mobile";
+
+            Log.d(TAG, profileBannerUrl.toString());
             Picasso.with(this)
                     .load(user.getProfileBannerUrl())
                     .placeholder(new ColorDrawable(R.color.profile_banner_background))
                     .error(new ColorDrawable(R.color.profile_banner_background))
+                    .centerCrop()
+                    .resize(320, 160)
                     .into(new Target() {
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -115,8 +123,6 @@ public class ProfileActivity extends ActionBarActivity {
                             Log.d(TAG, "loading banner");
                             mLlProfile.setBackgroundDrawable(placeHolderDrawable);
                         }
-
-
                     });
         } else {
             Log.d(TAG, "banner is null");

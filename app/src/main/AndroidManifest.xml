@@ -40,15 +40,19 @@
                     android:scheme="oauth" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.TimelineActivity"
-            android:label="@string/title_activity_timeline" >
+            android:label="@string/title_activity_timeline"
+            android:theme="@style/TimelineTheme" >
         </activity>
+
         <activity
             android:name=".activities.ComposeActivity"
             android:label="@string/title_activity_compose"
             android:theme="@style/ComposeTheme" >
         </activity>
+
         <activity
             android:name=".activities.DetailedViewActivity"
             android:label="@string/title_activity_detailed_view"
@@ -61,6 +65,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TimelineActivity" />
         </activity>
+
         <activity
             android:name=".activities.ProfileActivity"
             android:label="@string/title_activity_profile"

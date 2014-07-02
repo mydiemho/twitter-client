@@ -63,7 +63,6 @@ public class TimelineActivity extends ActionBarActivity {
     private void setupTabs() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.setDisplayShowTitleEnabled(true);
 
         mTabHome = actionBar
                 .newTab()
