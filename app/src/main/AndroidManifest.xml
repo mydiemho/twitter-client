@@ -56,13 +56,21 @@
             android:theme="@style/DetailedTheme" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
+            <!-- need this to implement home as back button -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TimelineActivity" />
         </activity>
         <activity
             android:name=".activities.ProfileActivity"
-            android:label="@string/title_activity_profile" >
+            android:label="@string/title_activity_profile"
+            android:parentActivityName=".activities.TimelineActivity" >
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <!-- need this to implement home as back button -->
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".activities.TimelineActivity" />
         </activity>
     </application>
 

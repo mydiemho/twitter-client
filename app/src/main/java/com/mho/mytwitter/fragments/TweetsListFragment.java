@@ -94,12 +94,15 @@ public abstract class TweetsListFragment extends Fragment {
                     @Override
                     public void onRefreshStarted(View view) {
 
+                        Log.d(TAG, "pull to refresh");
+
                         long sinceId = -1;
 
                         // not a first request
                         if (!mTweets.isEmpty()) {
                             // needs to add 1, since_id returns inclusive results
                             sinceId = mTweets.get(0).getTweetId() + 1;
+                            Log.d(TAG, "sincdId: " + sinceId);
                         }
 
                         // for refresh, maxId doesn't matter

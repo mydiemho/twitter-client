@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.Gravity;
 
 import java.text.ParseException;
@@ -57,7 +56,7 @@ public class Utils {
             e.printStackTrace();
         }
 
-        Log.d("DEBUG", "relativeDate: " + relativeDate);
+//        Log.d("DEBUG", "relativeDate: " + relativeDate);
 
         if(relativeDate.equals("yesterday")) {
             return "1d";
