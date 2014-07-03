@@ -40,10 +40,15 @@ public class Tweet extends Model implements Parcelable {
     @Column(name = "user", onUpdate = ForeignKeyAction.CASCADE, onDelete = ForeignKeyAction.CASCADE)
     private User user;
 
-    // Define table fields
-    @Column(name = "media_url", onUpdate = ForeignKeyAction.CASCADE,
-            onDelete = ForeignKeyAction.CASCADE)
+    @Column(name = "media_url")
     private String mediaUrl = "";
+
+    // Define table fields
+    @Column(name = "retweet_count")
+    private int retweetCount;
+
+    @Column(name = "favorite_count")
+    private int favoriteCount;
 
     // necessary to use ActiveAndroid
     public Tweet() {
@@ -80,6 +85,8 @@ public class Tweet extends Model implements Parcelable {
             tweet.tweetId = jsonObject.getLong("id_str");
             tweet.createdAt = jsonObject.getString("created_at");
             tweet.user = User.fromJsonObject(jsonObject.getJSONObject("user"));
+            tweet.retweetCount = jsonObject.getInt("retweet_count");
+            tweet.favoriteCount = jsonObject.getInt("favorite_count");
 
             JSONObject entities = jsonObject.getJSONObject("entities");
 
@@ -123,6 +130,14 @@ public class Tweet extends Model implements Parcelable {
         return mediaUrl;
     }
 
+    public int getRetweetCount() {
+        return retweetCount;
+    }
+
+    public int getFavoriteCount() {
+        return favoriteCount;
+    }
+
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
@@ -146,6 +161,8 @@ public class Tweet extends Model implements Parcelable {
         dest.writeString(this.createdAt);
         dest.writeParcelable(this.user, 0);
         dest.writeString(this.mediaUrl);
+        dest.writeInt(this.retweetCount);
+        dest.writeInt(this.favoriteCount);
     }
 
     private Tweet(Parcel in) {
@@ -154,6 +171,8 @@ public class Tweet extends Model implements Parcelable {
         this.createdAt = in.readString();
         this.user = in.readParcelable(User.class.getClassLoader());
         this.mediaUrl = in.readString();
+        this.retweetCount = in.readInt();
+        this.favoriteCount = in.readInt();
     }
 
     public static Parcelable.Creator<Tweet> CREATOR = new Parcelable.Creator<Tweet>() {

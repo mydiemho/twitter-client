@@ -46,6 +46,8 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
             viewHolder.tvScreenName = (TextView) convertView.findViewById(R.id.tvScreenName);
             viewHolder.tvTimestamp = (TextView) convertView.findViewById(R.id.tvTimestamp);
             viewHolder.tvBody = (TextView) convertView.findViewById(R.id.tvBody);
+            viewHolder.tvRetweetCount = (TextView) convertView.findViewById(R.id.tvRetweetCount);
+            viewHolder.tvFavoriteCount = (TextView) convertView.findViewById(R.id.tvFavoriteCount);
 
             convertView.setTag(viewHolder);
         } else {
@@ -67,6 +69,21 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
         viewHolder.tvTimestamp.setText(Utils.getRelativeTimeAgo(tweet.getCreatedAt()));
         viewHolder.tvBody.setText(tweet.getBody());
 
+        int retweetCount = tweet.getRetweetCount();
+        int favoriteCount = tweet.getFavoriteCount();
+
+        if(retweetCount > 0) {
+            viewHolder.tvRetweetCount.setText(String.valueOf(retweetCount));
+        } else {
+            viewHolder.tvRetweetCount.setVisibility(View.INVISIBLE);
+        }
+
+        if(favoriteCount > 0) {
+            viewHolder.tvFavoriteCount.setText(String.valueOf(favoriteCount));
+        } else {
+            viewHolder.tvRetweetCount.setVisibility(View.INVISIBLE);
+        }
+
         viewHolder.ivProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,6 +100,8 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
         TextView tvScreenName;
         TextView tvTimestamp;
         TextView tvBody;
+        TextView tvRetweetCount;
+        TextView tvFavoriteCount;
     }
 
     private void launchProfileActivity(User user) {

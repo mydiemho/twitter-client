@@ -5,12 +5,12 @@
                 android:descendantFocusability="blocksDescendants"
                 android:background="@drawable/bg_card">
 
-<ImageView
+    <ImageView
             android:id="@+id/ivProfileImage"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true" />
+            android:layout_alignParentTop="true"/>
 
     <TextView
             android:id="@+id/tvName"
@@ -19,6 +19,7 @@
             android:text="@string/foo"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/ivProfileImage"
+            android:textStyle="bold"
             android:textSize="15sp"
             android:layout_marginLeft="10dp"
             android:layout_alignTop="@+id/ivProfileImage"/>
@@ -33,7 +34,7 @@
             android:layout_alignBaseline="@+id/tvName"
             android:layout_toRightOf="@+id/tvName"
             android:textSize="10sp"
-            android:ellipsize="middle" />
+            android:ellipsize="middle"/>
 
     <TextView
             android:id="@+id/tvTimestamp"
@@ -44,7 +45,7 @@
             android:layout_alignBaseline="@+id/tvName"
             android:layout_alignParentRight="true"
             android:gravity="right"
-            android:textSize="10sp" />
+            android:textSize="10sp"/>
 
     <TextView
             android:id="@+id/tvBody"
@@ -55,6 +56,81 @@
             android:layout_alignLeft="@+id/tvName"
             android:autoLink="all"
             android:linksClickable="true"/>
+
+    <LinearLayout
+            android:layout_below="@+id/tvBody"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tvName"
+            android:layout_alignParentRight="true"
+            android:weightSum="4">
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+            <ImageButton
+                    android:id="@+id/ibReply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:background="@null"
+                    android:src="@drawable/ic_reply"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+            <ImageButton
+                    android:id="@+id/ibRetweet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:background="@null"
+                    android:src="@drawable/ic_retweet"/>
+
+            <TextView
+                    android:id="@+id/tvRetweetCount"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+            <ImageButton
+                    android:id="@+id/ibFavorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:background="@null"
+                    android:src="@drawable/ic_favorite"/>
+
+            <TextView
+                    android:id="@+id/tvFavoriteCount"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="10sp"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+        </LinearLayout>
+
+    </LinearLayout>
 
 
 </RelativeLayout>
