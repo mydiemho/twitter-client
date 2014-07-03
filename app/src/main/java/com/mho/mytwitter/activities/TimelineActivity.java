@@ -79,25 +79,24 @@ public class TimelineActivity extends ActionBarActivity {
         vpPager.setPageMargin(pageMargin);
 
         mTabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        mTabs.setViewPager(vpPager);
+//        mTabs.setViewPager(vpPager);
 
-//        mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset,
-//                    int positionOffsetPixels) {
-//
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                mAdapterViewPager.getItem(position);
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//
-//            }
-//        });
+        mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset,
+                    int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mAdapterViewPager.getItem(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         mTabs.setIndicatorColor(currentColor);
         mTabs.setUnderlineColor(Color.parseColor("#00aced"));
@@ -130,10 +129,8 @@ public class TimelineActivity extends ActionBarActivity {
 
             Log.d("DEBUG", "latestTweet: " + latestTweet.toString());
 
-//            ((TweetsListFragment) getSupportFragmentManager().findFragmentByTag("home"))
-//                    .postNewTweetToTop(
-//                            latestTweet);
-//            getSupportActionBar().selectTab(mTabHome);
+            // go back to home
+            mAdapterViewPager.getItem(0);
         }
     }
 
