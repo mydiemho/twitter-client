@@ -30,4 +30,7 @@ dependencies {
 
     // pull-to-refresh
     compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
+
+    // An interactive indicator to navigate between the different pages of a ViewPager
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 }
