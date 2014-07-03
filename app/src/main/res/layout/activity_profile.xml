@@ -48,12 +48,14 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/llProfile"
-            android:weightSum="2">
+            android:divider="@drawable/divider"
+            android:showDividers="middle"
+            android:weightSum="2" >
 
         <TextView
                 android:id="@+id/tvFollowersCount"
@@ -78,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/llCounts"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true">
