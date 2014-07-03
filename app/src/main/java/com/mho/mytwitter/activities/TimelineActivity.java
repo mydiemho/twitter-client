@@ -6,18 +6,18 @@ import com.mho.mytwitter.adapters.MyPagerAdapter;
 import com.mho.mytwitter.apps.TwitterApplication;
 import com.mho.mytwitter.fragments.HomeTimelineFragment;
 import com.mho.mytwitter.fragments.MentionsTimelineFragment;
-import com.mho.mytwitter.fragments.TweetsListFragment;
 import com.mho.mytwitter.helpers.Utils;
 import com.mho.mytwitter.models.Tweet;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -25,14 +25,12 @@ import android.view.Window;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.support.v7.app.ActionBar.Tab;
-
 public class TimelineActivity extends ActionBarActivity {
 
-    private Tab mTabHome;
-    private Tab mTabMentions;
+    private int currentColor = 0x00aced;
 
     private FragmentPagerAdapter mAdapterViewPager;
+    private PagerSlidingTabStrip mTabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,33 +68,39 @@ public class TimelineActivity extends ActionBarActivity {
     }
 
     private void setupTabs() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
         // Initialize the ViewPager and set an adapter
         ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
         mAdapterViewPager = new MyPagerAdapter(getSupportFragmentManager(), getFragments());
         vpPager.setAdapter(mAdapterViewPager);
 
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        tabs.setViewPager(vpPager);
-        tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset,
-                    int positionOffsetPixels) {
+        final int pageMargin = (int) TypedValue
+                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
+                        .getDisplayMetrics());
+        vpPager.setPageMargin(pageMargin);
 
-            }
+        mTabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        mTabs.setViewPager(vpPager);
 
-            @Override
-            public void onPageSelected(int position) {
-                mAdapterViewPager.getItem(position);
-            }
+//        mTabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset,
+//                    int positionOffsetPixels) {
+//
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                mAdapterViewPager.getItem(position);
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//
+//            }
+//        });
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        mTabs.setIndicatorColor(currentColor);
+        mTabs.setUnderlineColor(Color.parseColor("#00aced"));
     }
 
     private void displayComposePanel() {
@@ -126,10 +130,10 @@ public class TimelineActivity extends ActionBarActivity {
 
             Log.d("DEBUG", "latestTweet: " + latestTweet.toString());
 
-            ((TweetsListFragment) getSupportFragmentManager().findFragmentByTag("home"))
-                    .postNewTweetToTop(
-                            latestTweet);
-            getSupportActionBar().selectTab(mTabHome);
+//            ((TweetsListFragment) getSupportFragmentManager().findFragmentByTag("home"))
+//                    .postNewTweetToTop(
+//                            latestTweet);
+//            getSupportActionBar().selectTab(mTabHome);
         }
     }
 
